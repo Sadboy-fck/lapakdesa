@@ -112,8 +112,9 @@
             <div>
                 <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 text-center">Menu Utama</h2>
                 <div class="grid grid-cols-4 gap-2.5 px-1">
+                    <!-- GRID 1: INFO (Disesuaikan) -->
                     <button onclick="bukaModal('modalProduk')" class="flex flex-col items-center justify-center p-2.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/60 rounded-2xl shadow-sm hover:shadow active:scale-90 transition-all">
-                        <i class="fa-solid fa-tags text-xl text-emerald-600"></i>
+                        <i class="fa-solid fa-circle-info text-xl text-emerald-600"></i>
                         <span class="text-[10px] font-extrabold text-emerald-800 mt-1 tracking-tight">INFO</span>
                     </button>
                     <button onclick="bukaModal('modalGaleri')" class="flex flex-col items-center justify-center p-2.5 bg-blue-50 hover:bg-blue-100 border border-blue-200/60 rounded-2xl shadow-sm hover:shadow active:scale-90 transition-all">
@@ -131,7 +132,7 @@
                 </div>
             </div>
 
-            <!-- FITUR 1: BANNER UTAMA JEMPUT SAMPAH (Call-to-Action) -->
+            <!-- FITUR 1: BANNER INFORMASI LAYANAN -->
             <div onclick="bukaModal('modalProduk')" class="bg-gradient-to-br from-emerald-600 via-teal-600 to-emerald-800 rounded-2xl p-4 text-white shadow-lg relative overflow-hidden cursor-pointer active:scale-98 transition group">
                 <div class="absolute -right-4 -bottom-4 opacity-20 group-hover:scale-110 transition-transform">
                     <i class="fa-solid fa-truck-fast text-8xl"></i>
@@ -139,8 +140,8 @@
                 <div class="relative z-10 flex justify-between items-center">
                     <div class="space-y-1 max-w-[70%]">
                         <span class="bg-yellow-400 text-slate-900 text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Layanan Utama</span>
-                        <h3 class="font-black text-base leading-tight">Jemput Sampah Sekarang</h3>
-                        <p class="text-[10px] text-emerald-100">Kurir siap ke rumahmu & timbang di tempat.</p>
+                        <h3 class="font-black text-base leading-tight">Cek Katalog & Harga</h3>
+                        <p class="text-[10px] text-emerald-100">Lihat jenis sampah yang diterima & patokan harga terbaru.</p>
                     </div>
                     <div class="w-10 h-10 rounded-xl bg-white text-emerald-700 flex items-center justify-center font-bold text-base shadow group-hover:bg-yellow-300 transition-colors">
                         <i class="fa-solid fa-arrow-right"></i>
@@ -215,9 +216,9 @@
                     <i class="fa-solid fa-fire text-amber-500 text-sm shrink-0"></i>
                     <span>Promo minggu ini: Harga Kardus & Tembaga naik hingga 15%!</span>
                 </div>
-                <button onclick="tutupModal('modalPromo'); bukaModal('modalProfil')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3 rounded-xl shadow-lg hover:shadow-xl transition active:scale-95 text-xs flex items-center justify-center space-x-2">
-                    <i class="fa-solid fa-right-to-bracket"></i>
-                    <span>Login / Jual Sekarang</span>
+                <button onclick="tutupModal('modalPromo'); bukaModal('modalProduk')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3 rounded-xl shadow-lg hover:shadow-xl transition active:scale-95 text-xs flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>Lihat Info Produk</span>
                 </button>
                 <button onclick="tutupModal('modalPromo')" class="text-[11px] font-semibold text-slate-400 hover:text-slate-600 block mx-auto">
                     Nanti Saja
@@ -226,85 +227,75 @@
         </div>
     </div>
 
-    <!-- MODAL INFORMASI PRODUK & SETOR BARANG -->
+    <!-- MODAL INFORMASI PRODUK & HARGA (HANYA INFO SAMPAH) -->
     <div id="modalProduk" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-sm rounded-2xl p-4 shadow-2xl max-h-[85vh] overflow-y-auto animate-modal-center">
+            <!-- Header Modal -->
             <div class="flex justify-between items-center mb-3">
                 <div class="flex items-center space-x-2">
                     <div class="bg-emerald-100 text-emerald-600 p-1.5 rounded-lg text-xs">
-                        <i class="fa-solid fa-tags"></i>
+                        <i class="fa-solid fa-circle-info"></i>
                     </div>
-                    <h3 class="font-bold text-slate-800 text-sm">Info Produk & Setor</h3>
+                    <h3 class="font-bold text-slate-800 text-sm">Informasi Produk & Harga</h3>
                 </div>
                 <button onclick="tutupModal('modalProduk')" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 text-xs">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
 
-            <p class="text-[11px] font-semibold text-slate-500 mb-1.5">Kategori Berlaku & Harga/Kg:</p>
-            <div class="grid grid-cols-2 gap-1.5 text-xs mb-3">
-                <div class="bg-emerald-50 border border-emerald-200/60 p-2 rounded-lg">
-                    <p class="text-slate-500 text-[10px]">Plastik</p>
-                    <p class="font-extrabold text-emerald-700 text-xs">Rp 3.000 / kg</p>
+            <!-- Daftar Produk & Harga -->
+            <p class="text-[11px] font-semibold text-slate-500 mb-2">Kategori Daur Ulang & Estimasi Harga:</p>
+            <div class="grid grid-cols-2 gap-2 text-xs mb-3">
+                <div class="bg-emerald-50 border border-emerald-200/60 p-2.5 rounded-xl space-y-0.5">
+                    <div class="flex items-center justify-between">
+                        <span class="font-extrabold text-slate-700 text-[11px]">Plastik</span>
+                        <i class="fa-solid fa-bottle-water text-emerald-600 text-xs"></i>
+                    </div>
+                    <p class="font-black text-emerald-700 text-xs">Rp 3.000 <span class="text-[9px] text-slate-500 font-normal">/ kg</span></p>
+                    <p class="text-[9px] text-slate-400">Botol, gelas mineral, & galon bekas.</p>
                 </div>
-                <div class="bg-emerald-50 border border-emerald-200/60 p-2 rounded-lg">
-                    <p class="text-slate-500 text-[10px]">Besi</p>
-                    <p class="font-extrabold text-emerald-700 text-xs">Rp 5.000 / kg</p>
+
+                <div class="bg-emerald-50 border border-emerald-200/60 p-2.5 rounded-xl space-y-0.5">
+                    <div class="flex items-center justify-between">
+                        <span class="font-extrabold text-slate-700 text-[11px]">Besi</span>
+                        <i class="fa-solid fa-cubes text-emerald-600 text-xs"></i>
+                    </div>
+                    <p class="font-black text-emerald-700 text-xs">Rp 5.000 <span class="text-[9px] text-slate-500 font-normal">/ kg</span></p>
+                    <p class="text-[9px] text-slate-400">Besi padat, seng, & pipa besi bekas.</p>
                 </div>
-                <div class="bg-emerald-50 border border-emerald-200/60 p-2 rounded-lg">
-                    <p class="text-slate-500 text-[10px]">Kardus</p>
-                    <p class="font-extrabold text-emerald-700 text-xs">Rp 2.000 / kg</p>
+
+                <div class="bg-emerald-50 border border-emerald-200/60 p-2.5 rounded-xl space-y-0.5">
+                    <div class="flex items-center justify-between">
+                        <span class="font-extrabold text-slate-700 text-[11px]">Kardus</span>
+                        <i class="fa-solid fa-box text-emerald-600 text-xs"></i>
+                    </div>
+                    <p class="font-black text-emerald-700 text-xs">Rp 2.000 <span class="text-[9px] text-slate-500 font-normal">/ kg</span></p>
+                    <p class="text-[9px] text-slate-400">Kardus tebal, duplex, & kertas koran.</p>
                 </div>
-                <div class="bg-emerald-50 border border-emerald-200/60 p-2 rounded-lg">
-                    <p class="text-slate-500 text-[10px]">Tembaga</p>
-                    <p class="font-extrabold text-emerald-700 text-xs">Rp 70.000 / kg</p>
+
+                <div class="bg-emerald-50 border border-emerald-200/60 p-2.5 rounded-xl space-y-0.5">
+                    <div class="flex items-center justify-between">
+                        <span class="font-extrabold text-slate-700 text-[11px]">Tembaga</span>
+                        <i class="fa-solid fa-bolt text-emerald-600 text-xs"></i>
+                    </div>
+                    <p class="font-black text-emerald-700 text-xs">Rp 70.000 <span class="text-[9px] text-slate-500 font-normal">/ kg</span></p>
+                    <p class="text-[9px] text-slate-400">Kabel kupas & kumparan dinamo.</p>
                 </div>
             </div>
 
-            <hr class="my-3 border-slate-100">
-
-            <form onsubmit="handleSetorBarang(event)" class="space-y-2.5 text-xs">
-                <h4 class="font-bold text-slate-800 text-xs">Form Penjemputan Barang</h4>
-                <div>
-                    <label class="block text-slate-600 font-semibold mb-0.5">Pilih Kategori</label>
-                    <select id="setorKategori" onchange="hitungEstimasi()" class="w-full border border-slate-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
-                        <option value="" disabled selected>-- Pilih Kategori --</option>
-                        <option value="Plastik">Plastik (Rp 3.000/kg)</option>
-                        <option value="Besi">Besi (Rp 5.000/kg)</option>
-                        <option value="Kardus">Kardus (Rp 2.000/kg)</option>
-                        <option value="Tembaga">Tembaga (Rp 70.000/kg)</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-slate-600 font-semibold mb-0.5">Nama / Deskripsi Barang</label>
-                    <input type="text" id="setorNama" placeholder="Contoh: Botol Plastik / Kardus" class="w-full border border-slate-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
-                </div>
-
-                <div>
-                    <label class="block text-slate-600 font-semibold mb-0.5">Banyak Barang (Kg)</label>
-                    <input type="number" id="setorKg" min="1" step="0.5" placeholder="Contoh: 10" oninput="hitungEstimasi()" class="w-full border border-slate-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
-                </div>
-
-                <div class="bg-slate-50 p-2 rounded-lg border border-slate-200 flex justify-between items-center">
-                    <span class="text-slate-600 text-[11px]">Estimasi Saldo:</span>
-                    <span id="setorEstimasi" class="font-extrabold text-emerald-600 text-xs">Rp 0</span>
-                </div>
-
-                <div>
-                    <label class="block text-slate-600 font-semibold mb-0.5">Lokasi Akurat</label>
-                    <button type="button" onclick="ambilGPS()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-1.5 rounded-lg mb-1 flex items-center justify-center space-x-1 transition text-[11px]">
-                        <i class="fa-solid fa-location-dot text-red-500"></i>
-                        <span>Ambil GPS Saya</span>
-                    </button>
-                    <input type="text" id="setorGPS" readonly placeholder="Koordinat GPS (Otomatis)" class="w-full bg-slate-100 border border-slate-200 rounded-lg px-2.5 py-1.5 text-[10px] text-slate-500 mb-1">
-                    <textarea id="setorAlamat" rows="2" placeholder="Detail Alamat & Patokan Rumah" class="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-[11px]" required></textarea>
-                </div>
-
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl shadow transition active:scale-95">
-                    Kirim & Minta Jemput
-                </button>
-            </form>
+            <!-- Syarat & Ketentuan Barang -->
+            <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-3 space-y-2 text-[11px] text-slate-600">
+                <h4 class="font-bold text-slate-800 text-xs flex items-center space-x-1">
+                    <i class="fa-solid fa-clipboard-check text-emerald-600"></i>
+                    <span>Kriteria Sampah Diterima</span>
+                </h4>
+                <ul class="list-disc list-inside space-y-1 text-[10px] text-slate-500">
+                    <li>Sampah dalam kondisi relatif bersih dan tidak basah kuyup.</li>
+                    <li>Botol plastik sebaiknya dikosongkan dari sisa air.</li>
+                    <li>Minimal berat penjemputan gabungan total adalah <strong>5 kg</strong>.</li>
+                    <li>Harga dapat berubah sewaktu-waktu mengikuti perkembangan pasar daur ulang.</li>
+                </ul>
+            </div>
         </div>
     </div>
 
@@ -566,60 +557,6 @@
         // --- MODAL CONTROLLER ---
         function bukaModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function tutupModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-        // --- SETOR BARANG LOGIC ---
-        function hitungEstimasi() {
-            const kat = document.getElementById('setorKategori').value;
-            const kg = parseFloat(document.getElementById('setorKg').value) || 0;
-            const total = (HARGA[kat] || 0) * kg;
-            document.getElementById('setorEstimasi').innerText = formatRp(total);
-        }
-
-        function ambilGPS() {
-            if (navigator.geolocation) {
-                Swal.fire({ title: 'Mencari GPS...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
-                navigator.geolocation.getCurrentPosition(
-                    (pos) => {
-                        const coords = `${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`;
-                        document.getElementById('setorGPS').value = coords;
-                        Swal.fire({ icon: 'success', title: 'GPS Berhasil!', text: coords, timer: 1500, showConfirmButton: false });
-                    },
-                    () => Swal.fire('Gagal GPS', 'Aktifkan izin lokasi browser.', 'error'),
-                    { enableHighAccuracy: true }
-                );
-            }
-        }
-
-        function handleSetorBarang(e) {
-            e.preventDefault();
-            const kat = document.getElementById('setorKategori').value;
-            const nama = document.getElementById('setorNama').value;
-            const kg = parseFloat(document.getElementById('setorKg').value);
-            const gps = document.getElementById('setorGPS').value || 'Manual';
-            const alamat = document.getElementById('setorAlamat').value;
-
-            const txBaru = {
-                id: 'DIT-' + Date.now(),
-                kategori: kat,
-                nama,
-                kg,
-                total: HARGA[kat] * kg,
-                gps,
-                alamat,
-                status: 'Menunggu Penjemputan',
-                tanggal: new Date().toLocaleString('id-ID')
-            };
-
-            appData.transaksi.unshift(txBaru);
-            simpan();
-
-            e.target.reset();
-            document.getElementById('setorEstimasi').innerText = 'Rp 0';
-            tutupModal('modalProduk');
-
-            Swal.fire({ icon: 'success', title: 'Permintaan Terkirim!', text: 'Admin akan segera menjemput barang kamu.', confirmButtonColor: '#059669' });
-            bukaModal('modalProfil');
-        }
 
         // --- GALERI LOGIC ---
         function uploadFoto() {
