@@ -3,102 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DUITIN - Tukar Sampah Jadi Cuan & Sembako</title>
+    <title>DUITIN - Tukar Sampah Jadi Duit & Sembako</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- SweetAlert2 untuk Notifikasi Modern -->
+    <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        /* Keyframe Animasi Pop-up Modal */
+        @keyframes modalPop {
+            0% { opacity: 0; transform: scale(0.9) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .animate-modal {
+            animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Running Text Smooth */
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .marquee-text {
+            display: inline-block;
+            animation: marquee 18s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
         }
     </style>
 </head>
-<body class="pb-12">
+<body class="min-h-screen flex flex-col justify-between text-slate-800">
 
-    <!-- Header & Navbar -->
-    <nav class="bg-emerald-600 text-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+    <!-- MAIN APP WRAPPER (Mobile-First Container) -->
+    <div class="max-w-md mx-auto w-full min-h-screen bg-white shadow-xl flex flex-col relative pb-8">
+        
+        <!-- 1. HEADER (Bagian Atas) -->
+        <header class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-4 sticky top-0 z-30 shadow-md flex justify-between items-center">
             <div class="flex items-center space-x-2">
-                <i class="fa-solid fa-recycle text-2xl text-yellow-300"></i>
-                <span class="text-2xl font-black tracking-wider">DUITIN</span>
-            </div>
-            <div class="flex items-center space-x-3 bg-emerald-700 px-3 py-1.5 rounded-full border border-emerald-500">
-                <i class="fa-solid fa-wallet text-yellow-300"></i>
-                <div class="text-right">
-                    <p class="text-xs text-emerald-200 font-medium">Saldo Profil</p>
-                    <p id="navSaldo" class="text-sm font-bold">Rp 0</p>
+                <div class="bg-white/20 p-2 rounded-xl backdrop-blur-md">
+                    <i class="fa-solid fa-recycle text-xl text-yellow-300"></i>
                 </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Main Container -->
-    <div class="max-w-4xl mx-auto px-4 mt-6">
-
-        <!-- Banner Info Harga / Kartu Saldo -->
-        <div class="bg-gradient-to-r from-emerald-500 to-teal-700 rounded-2xl p-6 text-white shadow-xl mb-6">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h1 class="text-xl font-bold">Ubah Barang Bekas Jadi Rupiah!</h1>
-                    <p class="text-sm text-emerald-100 mt-1">
-                        Kategori berlaku: Plastik, Besi, Kardus, dan Tembaga. Penjemputan langsung ke lokasi kamu.
-                    </p>
+                    <h1 class="text-xl font-extrabold tracking-wider leading-none">DUITIN</h1>
+                    <p class="text-[10px] text-emerald-100 font-medium mt-0.5">Sampah Jadi Duit & Sembako</p>
                 </div>
-                <button onclick="bukaModalTarik()" class="bg-yellow-400 hover:bg-yellow-300 text-emerald-950 font-bold px-5 py-2.5 rounded-xl shadow-md transition transform active:scale-95 flex items-center space-x-2 w-full md:w-auto justify-center">
-                    <i class="fa-solid fa-money-bill-transfer"></i>
-                    <span>Tarik Uang</span>
+            </div>
+            <!-- Quick Saldo Badge -->
+            <div onclick="bukaModal('modalProfil')" class="bg-emerald-800/60 hover:bg-emerald-800 border border-emerald-400/30 px-3 py-1.5 rounded-full flex items-center space-x-2 cursor-pointer transition">
+                <i class="fa-solid fa-wallet text-yellow-300 text-xs"></i>
+                <span id="headerSaldo" class="text-xs font-bold">Rp 0</span>
+            </div>
+        </header>
+
+        <!-- CONTENT AREA -->
+        <main class="p-4 space-y-4 flex-1">
+
+            <!-- 2. IMAGE SLIDER (3 Gambar Banner) -->
+            <div class="relative w-full rounded-2xl overflow-hidden shadow-md aspect-[21/9] bg-slate-100">
+                <div id="sliderWrapper" class="flex transition-transform duration-500 ease-out h-full w-full">
+                    <!-- Slide 1 -->
+                    <div class="min-w-full h-full relative">
+                        <img src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover" alt="Slide 1">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-3">
+                            <p class="text-white text-xs font-semibold">Tukarkan sampah plastik & besi secara mudah!</p>
+                        </div>
+                    </div>
+                    <!-- Slide 2 -->
+                    <div class="min-w-full h-full relative">
+                        <img src="https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover" alt="Slide 2">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-3">
+                            <p class="text-white text-xs font-semibold">Jemput langsung ke lokasi rumah kamu!</p>
+                        </div>
+                    </div>
+                    <!-- Slide 3 -->
+                    <div class="min-w-full h-full relative">
+                        <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover" alt="Slide 3">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-3">
+                            <p class="text-white text-xs font-semibold">Cairkan saldo instan ke DANA, OVO & Bank!</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Indicator Dots -->
+                <div class="absolute bottom-2 right-3 flex space-x-1.5 z-10">
+                    <div id="dot0" class="w-2 h-2 rounded-full bg-white transition-all"></div>
+                    <div id="dot1" class="w-2 h-2 rounded-full bg-white/50 transition-all"></div>
+                    <div id="dot2" class="w-2 h-2 rounded-full bg-white/50 transition-all"></div>
+                </div>
+            </div>
+
+            <!-- 3. RUNNING TEXT (Info Terupdate) -->
+            <div class="bg-amber-50 border border-amber-200/80 rounded-xl px-3 py-2 flex items-center space-x-2 text-xs text-amber-900 shadow-sm">
+                <span class="bg-amber-500 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-md tracking-wider flex items-center space-x-1 shrink-0">
+                    <i class="fa-solid fa-bullhorn text-[9px]"></i>
+                    <span>INFO TERUPDATE</span>
+                </span>
+                <div class="marquee-container w-full">
+                    <div class="marquee-text font-medium">
+                        ♻️ Harga Tembaga hari ini naik menjadi Rp 70.000/kg! • Minimal penarikan saldo Rp 50.000 via DANA/OVO/Bank • Penjemputan gratis ongkir area Bandung & sekitarnya.
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. MENU UTAMA (4 Grid Kecil Sejajar Layout) -->
+            <div>
+                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5 px-1">Menu Utama</h2>
+                <div class="grid grid-cols-2 gap-3">
+                    
+                    <!-- GRID 1: Informasi Produk -->
+                    <button onclick="bukaModal('modalProduk')" class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md active:scale-95 transition text-left flex flex-col justify-between h-28 group relative overflow-hidden">
+                        <div class="absolute -right-2 -bottom-2 opacity-10 text-emerald-600 group-hover:scale-110 transition">
+                            <i class="fa-solid fa-boxes-stacked text-6xl"></i>
+                        </div>
+                        <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-tags text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-sm">Info Produk</h3>
+                            <p class="text-[11px] text-slate-500">Harga & Setor Barang</p>
+                        </div>
+                    </button>
+
+                    <!-- GRID 2: Gallery -->
+                    <button onclick="bukaModal('modalGaleri')" class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md active:scale-95 transition text-left flex flex-col justify-between h-28 group relative overflow-hidden">
+                        <div class="absolute -right-2 -bottom-2 opacity-10 text-blue-600 group-hover:scale-110 transition">
+                            <i class="fa-solid fa-images text-6xl"></i>
+                        </div>
+                        <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-camera text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-sm">Galeri Kegiatan</h3>
+                            <p class="text-[11px] text-slate-500">Foto Penjemputan</p>
+                        </div>
+                    </button>
+
+                    <!-- GRID 3: Fact Aplikasi -->
+                    <button onclick="bukaModal('modalFact')" class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md active:scale-95 transition text-left flex flex-col justify-between h-28 group relative overflow-hidden">
+                        <div class="absolute -right-2 -bottom-2 opacity-10 text-purple-600 group-hover:scale-110 transition">
+                            <i class="fa-solid fa-lightbulb text-6xl"></i>
+                        </div>
+                        <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-circle-info text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-sm">Fact Aplikasi</h3>
+                            <p class="text-[11px] text-slate-500">Panduan & Edukasi</p>
+                        </div>
+                    </button>
+
+                    <!-- GRID 4: Profil User -->
+                    <button onclick="bukaModal('modalProfil')" class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md active:scale-95 transition text-left flex flex-col justify-between h-28 group relative overflow-hidden">
+                        <div class="absolute -right-2 -bottom-2 opacity-10 text-amber-600 group-hover:scale-110 transition">
+                            <i class="fa-solid fa-wallet text-6xl"></i>
+                        </div>
+                        <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-user-gear text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-sm">Profil & Saldo</h3>
+                            <p class="text-[11px] text-slate-500">Tarik Uang & Akun</p>
+                        </div>
+                    </button>
+
+                </div>
+            </div>
+
+        </main>
+
+        <!-- 5. WATERMARK FOOTER -->
+        <footer class="mt-6 px-4">
+            <div class="bg-slate-100 border border-slate-200/80 rounded-2xl p-3.5 text-center shadow-inner">
+                <p class="text-[11px] font-bold text-slate-600 flex items-center justify-center space-x-1">
+                    <i class="fa-solid fa-leaf text-emerald-600"></i>
+                    <span>DUITIN App v2.0 • Clean & Green</span>
+                </p>
+                <p class="text-[10px] text-slate-400 mt-0.5">© 2026 DUITIN Platform. Hak Cipta Dilindungi.</p>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- ==================== POPUP MODALS SECTION ==================== -->
+
+    <!-- MODAL 1: INFORMASI PRODUK & SETOR BARANG -->
+    <div id="modalProduk" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 shadow-2xl max-h-[90vh] overflow-y-auto animate-modal">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center space-x-2">
+                    <div class="bg-emerald-100 text-emerald-600 p-2 rounded-xl">
+                        <i class="fa-solid fa-tags"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-base">Informasi Produk & Setor</h3>
+                </div>
+                <button onclick="tutupModal('modalProduk')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200">
+                    <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            
-            <!-- Estimasi Harga Per Kg -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6 pt-4 border-t border-emerald-400/40 text-xs">
-                <div class="bg-white/10 p-2.5 rounded-lg backdrop-blur-sm">
-                    <p class="text-emerald-200">Plastik</p>
-                    <p class="font-bold text-sm">Rp 3.000 / kg</p>
+
+            <!-- Daftar Kategori Harga -->
+            <p class="text-xs font-semibold text-slate-500 mb-2">Kategori Berlaku & Harga/Kg:</p>
+            <div class="grid grid-cols-2 gap-2 text-xs mb-4">
+                <div class="bg-emerald-50 border border-emerald-200/60 p-2.5 rounded-xl">
+                    <p class="text-slate-500 font-medium">Plastik</p>
+                    <p class="font-extrabold text-emerald-700 text-sm">Rp 3.000 / kg</p>
                 </div>
-                <div class="bg-white/10 p-2.5 rounded-lg backdrop-blur-sm">
-                    <p class="text-emerald-200">Besi</p>
-                    <p class="font-bold text-sm">Rp 5.000 / kg</p>
+                <div class="bg-emerald-50 border border-emerald-200/60 p-2.5 rounded-xl">
+                    <p class="text-slate-500 font-medium">Besi</p>
+                    <p class="font-extrabold text-emerald-700 text-sm">Rp 5.000 / kg</p>
                 </div>
-                <div class="bg-white/10 p-2.5 rounded-lg backdrop-blur-sm">
-                    <p class="text-emerald-200">Kardus</p>
-                    <p class="font-bold text-sm">Rp 2.000 / kg</p>
+                <div class="bg-emerald-50 border border-emerald-200/60 p-2.5 rounded-xl">
+                    <p class="text-slate-500 font-medium">Kardus</p>
+                    <p class="font-extrabold text-emerald-700 text-sm">Rp 2.000 / kg</p>
                 </div>
-                <div class="bg-white/10 p-2.5 rounded-lg backdrop-blur-sm">
-                    <p class="text-emerald-200">Tembaga</p>
-                    <p class="font-bold text-sm">Rp 70.000 / kg</p>
+                <div class="bg-emerald-50 border border-emerald-200/60 p-2.5 rounded-xl">
+                    <p class="text-slate-500 font-medium">Tembaga</p>
+                    <p class="font-extrabold text-emerald-700 text-sm">Rp 70.000 / kg</p>
                 </div>
             </div>
-        </div>
 
-        <!-- Tab Navigasi -->
-        <div class="flex border-b border-gray-200 mb-6 bg-white rounded-xl shadow-sm p-1">
-            <button id="tabFormBtn" onclick="switchTab('form')" class="flex-1 py-2.5 text-center font-bold text-emerald-600 border-b-2 border-emerald-600 rounded-lg text-sm transition">
-                <i class="fa-solid fa-box-open mr-1"></i> Jual Barang
-            </button>
-            <button id="tabRiwayatBtn" onclick="switchTab('riwayat')" class="flex-1 py-2.5 text-center font-semibold text-gray-500 rounded-lg text-sm transition hover:text-emerald-600">
-                <i class="fa-solid fa-clock-rotate-left mr-1"></i> Status Jemput
-            </button>
-            <button id="tabAdminBtn" onclick="switchTab('admin')" class="flex-1 py-2.5 text-center font-semibold text-gray-500 rounded-lg text-sm transition hover:text-emerald-600">
-                <i class="fa-solid fa-user-gear mr-1"></i> Panel Admin
-            </button>
-        </div>
+            <hr class="my-4 border-slate-100">
 
-        <!-- FORM SETOR BARANG -->
-        <div id="sectionForm" class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
-            <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                <i class="fa-solid fa-truck-pickup text-emerald-600 mr-2"></i> Form Permintaan Penjemputan
-            </h2>
-
-            <form id="formSetor" onsubmit="handleProsesJual(event)" class="space-y-4">
-                <!-- Kategori Barang -->
+            <!-- Form Setor Barang -->
+            <form onsubmit="handleSetorBarang(event)" class="space-y-3 text-xs">
+                <h4 class="font-bold text-slate-800 text-sm">Form Penjemputan Barang</h4>
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Pilih Kategori Barang</label>
-                    <select id="kategori" onchange="hitungEstimasi()" class="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none" required>
+                    <label class="block text-slate-600 font-semibold mb-1">Pilih Kategori</label>
+                    <select id="setorKategori" onchange="hitungEstimasi()" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
                         <option value="" disabled selected>-- Pilih Kategori --</option>
                         <option value="Plastik">Plastik (Rp 3.000/kg)</option>
                         <option value="Besi">Besi (Rp 5.000/kg)</option>
@@ -107,442 +247,483 @@
                     </select>
                 </div>
 
-                <!-- Nama Produk -->
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Produk / Deskripsi Singkat</label>
-                    <input type="text" id="namaProduk" placeholder="Contoh: Botol Mineral 2 Karung / Kabel Tembaga Bekas" class="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none" required>
+                    <label class="block text-slate-600 font-semibold mb-1">Nama Produk / Deskripsi</label>
+                    <input type="text" id="setorNama" placeholder="Contoh: Botol Plastik / Kardus Bekas" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
                 </div>
 
-                <!-- Banyak Barang (Kg) -->
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Banyak Barang (Kg)</label>
-                    <input type="number" id="jumlahKg" min="1" step="0.5" placeholder="Contoh: 10" oninput="hitungEstimasi()" class="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none" required>
+                    <label class="block text-slate-600 font-semibold mb-1">Banyak Barang (Kg)</label>
+                    <input type="number" id="setorKg" min="1" step="0.5" placeholder="Contoh: 10" oninput="hitungEstimasi()" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
                 </div>
 
-                <!-- Estimasi Saldo Diterima -->
-                <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex justify-between items-center text-sm">
-                    <span class="text-emerald-800 font-medium">Estimasi Saldo Diterima:</span>
-                    <span id="estimasiNilai" class="text-emerald-700 font-bold text-base">Rp 0</span>
+                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 flex justify-between items-center">
+                    <span class="text-slate-600">Estimasi Saldo:</span>
+                    <span id="setorEstimasi" class="font-extrabold text-emerald-600 text-sm">Rp 0</span>
                 </div>
 
-                <!-- Share Lokasi Akurat -->
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Lokasi Penjemputan Akurat</label>
-                    <div class="flex space-x-2 mb-2">
-                        <button type="button" onclick="dapatkanLokasiGPS()" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-semibold px-4 py-2 rounded-xl text-sm flex items-center transition">
-                            <i class="fa-solid fa-location-dot mr-2 text-emerald-600"></i> Ambil Titik GPS Saya
-                        </button>
-                    </div>
-                    <input type="text" id="koordinat" readonly placeholder="Koordinat GPS (Otomatis)" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2 text-xs text-gray-600 mb-2">
-                    <textarea id="alamatDetail" rows="2" placeholder="Tuliskan alamat lengkap / patokan lokasi (misal: Samping Pos Ronda No. 12)" class="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm" required></textarea>
-                </div>
-
-                <!-- Submit Button -->
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg transition duration-200 flex justify-center items-center">
-                    <i class="fa-solid fa-paper-plane mr-2"></i> Kirim Permintaan & Minta Jemput
-                </button>
-            </form>
-        </div>
-
-        <!-- TAB STATUS & RIWAYAT -->
-        <div id="sectionRiwayat" class="hidden space-y-4">
-            <h2 class="text-lg font-bold text-gray-800 mb-2 flex items-center">
-                <i class="fa-solid fa-list-check text-emerald-600 mr-2"></i> Status Penjemputan Barang Kamu
-            </h2>
-            <div id="daftarRiwayat" class="space-y-3">
-                <!-- Konten dinamis dari JS -->
-            </div>
-        </div>
-
-        <!-- TAB ADMIN (SIMULASI PENJEMPUTAN) -->
-        <div id="sectionAdmin" class="hidden bg-white rounded-2xl p-6 shadow-md border border-gray-100">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg font-bold text-gray-800 flex items-center">
-                    <i class="fa-solid fa-user-shield text-emerald-600 mr-2"></i> Panel Kelola Admin
-                </h2>
-                <span class="text-xs bg-emerald-100 text-emerald-800 font-semibold px-2.5 py-1 rounded-full">Simulasi Pengemudi / Admin</span>
-            </div>
-            <p class="text-xs text-gray-500 mb-4">Sebagai Admin, kamu dapat menyetujui lokasi penjemputan dan menyelesaikan transaksi agar saldo pengguna bertambah secara otomatis.</p>
-            <div id="daftarAdmin" class="space-y-4">
-                <!-- Konten dinamis dari JS -->
-            </div>
-        </div>
-
-    </div>
-
-    <!-- MODAL PENARIKAN SALDO -->
-    <div id="modalTarik" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex justify-center items-center p-4">
-        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative animate-fade-in">
-            <button onclick="tutupModalTarik()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
-                <i class="fa-solid fa-xmark text-xl"></i>
-            </button>
-
-            <h3 class="text-lg font-bold text-gray-800 mb-1 flex items-center">
-                <i class="fa-solid fa-hand-holding-dollar text-emerald-600 mr-2"></i> Penarikan Saldo
-            </h3>
-            <p class="text-xs text-gray-500 mb-4">Minimal batas penarikan adalah <span class="font-bold text-emerald-600">Rp 50.000</span>.</p>
-
-            <div class="bg-gray-50 p-3 rounded-xl border border-gray-200 mb-4 flex justify-between items-center">
-                <span class="text-sm text-gray-600 font-medium">Saldo Kamu Saat Ini:</span>
-                <span id="modalSaldoSaatIni" class="text-base font-bold text-emerald-700">Rp 0</span>
-            </div>
-
-            <form onsubmit="handleTarikUang(event)" class="space-y-4">
-                <!-- Opsi Metode Penarikan -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Metode Penarikan</label>
-                    <select id="metodePenarikan" onchange="toggleFormMetode()" class="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none" required>
-                        <option value="" disabled selected>-- Pilih Metode --</option>
-                        <optgroup label="E-Wallet">
-                            <option value="DANA">DANA</option>
-                            <option value="OVO">OVO</option>
-                        </optgroup>
-                        <optgroup label="Transfer Bank">
-                            <option value="Bank BCA">Bank BCA</option>
-                            <option value="Bank Mandiri">Bank Mandiri</option>
-                            <option value="Bank BRI">Bank BRI</option>
-                            <option value="Bank BNI">Bank BNI</option>
-                        </optgroup>
-                    </select>
-                </div>
-
-                <!-- Nomor Rekening / No HP E-Wallet -->
-                <div>
-                    <label id="labelNomorTujuan" class="block text-sm font-semibold text-gray-700 mb-1">Nomor Akun / Rekening</label>
-                    <input type="number" id="nomorTujuan" placeholder="Contoh: 081234567890" class="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none" required>
-                </div>
-
-                <!-- Nominal Penarikan -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">Nominal Penarikan (Rp)</label>
-                    <input type="number" id="nominalPenarikan" min="50000" step="5000" placeholder="Minimal 50000" class="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none" required>
+                    <label class="block text-slate-600 font-semibold mb-1">Lokasi Akurat</label>
+                    <button type="button" onclick="ambilGPS()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 rounded-xl mb-1.5 flex items-center justify-center space-x-1.5 transition">
+                        <i class="fa-solid fa-location-dot text-red-500"></i>
+                        <span>Ambil GPS Saya</span>
+                    </button>
+                    <input type="text" id="setorGPS" readonly placeholder="Koordinat GPS (Otomatis)" class="w-full bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-[11px] text-slate-500 mb-1.5">
+                    <textarea id="setorAlamat" rows="2" placeholder="Detail Alamat & Patokan Rumah" class="w-full border border-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500" required></textarea>
                 </div>
 
                 <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg transition">
+                    Kirim & Minta Jemput
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: GALERI (UPLOAD & HAPUS FOTO) -->
+    <div id="modalGaleri" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 shadow-2xl max-h-[90vh] overflow-y-auto animate-modal">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center space-x-2">
+                    <div class="bg-blue-100 text-blue-600 p-2 rounded-xl">
+                        <i class="fa-solid fa-images"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-base">Galeri Penjemputan</h3>
+                </div>
+                <button onclick="tutupModal('modalGaleri')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Panel Upload Admin/User -->
+            <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 mb-4 text-xs">
+                <p class="font-semibold text-slate-700 mb-2"><i class="fa-solid fa-cloud-arrow-up text-blue-500 mr-1"></i> Upload Foto Baru</p>
+                <div class="flex space-x-2">
+                    <input type="file" id="inputFoto" accept="image/*" class="w-full border border-slate-200 rounded-xl bg-white px-2 py-1.5 text-[11px]">
+                    <button onclick="uploadFoto()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-1.5 rounded-xl shrink-0">
+                        Upload
+                    </button>
+                </div>
+            </div>
+
+            <!-- Grid Foto -->
+            <div id="containerGaleri" class="grid grid-cols-2 gap-2.5">
+                <!-- Foto di-render via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: FACT APLIKASI (TENTANG DUITIN) -->
+    <div id="modalFact" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 shadow-2xl max-h-[90vh] overflow-y-auto animate-modal">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center space-x-2">
+                    <div class="bg-purple-100 text-purple-600 p-2 rounded-xl">
+                        <i class="fa-solid fa-lightbulb"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-base">Fact & Tentang DUITIN</h3>
+                </div>
+                <button onclick="tutupModal('modalFact')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="space-y-3 text-xs text-slate-600">
+                <div class="bg-purple-50 p-3 rounded-2xl border border-purple-100">
+                    <h4 class="font-bold text-purple-900 mb-1 flex items-center">
+                        <i class="fa-solid fa-earth-americas mr-1.5"></i> Apa itu DUITIN?
+                    </h4>
+                    <p>DUITIN adalah platform daur ulang berbasis masyarakat yang mengubah sampah rumah tangga menjadi sumber pendapatan digital atau sembako.</p>
+                </div>
+
+                <div class="space-y-2">
+                    <h4 class="font-bold text-slate-800 text-xs">Fakta Menarik Pengelolaan Sampah:</h4>
+                    <div class="flex items-start space-x-2 bg-slate-50 p-2.5 rounded-xl">
+                        <i class="fa-solid fa-check-circle text-emerald-500 mt-0.5"></i>
+                        <p>1 Ton kardus bekas yang didaur ulang dapat menyelamatkan 17 pohon dewasa dari penebangan.</p>
+                    </div>
+                    <div class="flex items-start space-x-2 bg-slate-50 p-2.5 rounded-xl">
+                        <i class="fa-solid fa-check-circle text-emerald-500 mt-0.5"></i>
+                        <p>Tembaga memiliki nilai daur ulang tertinggi dan tidak pernah kehilangan kualitas fisiknya.</p>
+                    </div>
+                    <div class="flex items-start space-x-2 bg-slate-50 p-2.5 rounded-xl">
+                        <i class="fa-solid fa-check-circle text-emerald-500 mt-0.5"></i>
+                        <p>Aplikasi DUITIN memberikan gratis biaya jemput langsung ke alamat rumah kamu.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: PROFIL USER & TARIK UANG -->
+    <div id="modalProfil" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 shadow-2xl max-h-[90vh] overflow-y-auto animate-modal">
+            <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center space-x-2">
+                    <div class="bg-amber-100 text-amber-600 p-2 rounded-xl">
+                        <i class="fa-solid fa-user-gear"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-base">Profil & Saldo Saya</h3>
+                </div>
+                <button onclick="tutupModal('modalProfil')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Card Profil -->
+            <div class="bg-gradient-to-br from-amber-500 to-yellow-600 rounded-2xl p-4 text-white shadow-md mb-4 space-y-3">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center font-bold text-lg border border-white/40">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div>
+                        <h4 id="profileNama" class="font-extrabold text-base leading-tight">Pengguna DUITIN</h4>
+                        <p id="profileAlamat" class="text-[11px] text-amber-100">Bandung, Jawa Barat</p>
+                    </div>
+                </div>
+                <div class="pt-2 border-t border-white/20 flex justify-between items-end">
+                    <div>
+                        <p class="text-[10px] text-amber-100 uppercase tracking-wider">Total Saldo Terkumpul</p>
+                        <p id="profileSaldo" class="text-xl font-black">Rp 0</p>
+                    </div>
+                    <button onclick="bukaModalTarik()" class="bg-white text-amber-900 font-extrabold text-xs px-3.5 py-2 rounded-xl shadow hover:bg-amber-50 active:scale-95 transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-hand-holding-dollar text-emerald-600"></i>
+                        <span>Tarik Uang</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab Switcher Dalam Profil -->
+            <div class="flex border-b border-slate-200 mb-3 text-xs">
+                <button id="btnTabStatus" onclick="switchTabProfil('status')" class="flex-1 py-2 font-bold text-emerald-600 border-b-2 border-emerald-600">Status Penjemputan</button>
+                <button id="btnTabAdmin" onclick="switchTabProfil('admin')" class="flex-1 py-2 font-semibold text-slate-400">Simulasi Admin</button>
+            </div>
+
+            <!-- Status Penjemputan -->
+            <div id="secStatus" class="space-y-2 text-xs">
+                <div id="daftarStatusUser">
+                    <!-- Status transaksi user -->
+                </div>
+            </div>
+
+            <!-- Panel Admin -->
+            <div id="secAdmin" class="hidden space-y-2 text-xs">
+                <p class="text-slate-500 text-[11px] mb-2">Sebagai Admin, kamu dapat menyetujui lokasi penjemputan dan mencairkan saldo ke profil pengguna.</p>
+                <div id="daftarStatusAdmin">
+                    <!-- Daftar antrean admin -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SUB-MODAL: FORM PENARIKAN UANG -->
+    <div id="modalTarikUang" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-xs rounded-2xl p-4 shadow-2xl animate-modal text-xs">
+            <div class="flex justify-between items-center mb-3">
+                <h4 class="font-bold text-slate-800 text-sm">Penarikan Saldo</h4>
+                <button onclick="tutupModal('modalTarikUang')" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <p class="text-slate-500 mb-3">Minimal penarikan adalah <span class="font-bold text-emerald-600">Rp 50.000</span>.</p>
+
+            <form onsubmit="handleTarikPencairan(event)" class="space-y-2.5">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Metode Penarikan</label>
+                    <select id="tarikMetode" onchange="updateLabelTarget()" class="w-full border border-slate-200 rounded-xl px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
+                        <option value="" disabled selected>-- Pilih Metode --</option>
+                        <option value="DANA">DANA</option>
+                        <option value="OVO">OVO</option>
+                        <option value="Bank BCA">Bank BCA</option>
+                        <option value="Bank Mandiri">Bank Mandiri</option>
+                        <option value="Bank BRI">Bank BRI</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label id="labelTarget" class="block font-semibold text-slate-700 mb-1">Nomor Akun / Rekening</label>
+                    <input type="number" id="tarikTarget" placeholder="Contoh: 081234567890" class="w-full border border-slate-200 rounded-xl px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Nominal (Rp)</label>
+                    <input type="number" id="tarikNominal" min="50000" step="5000" placeholder="Min 50000" class="w-full border border-slate-200 rounded-xl px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
+                </div>
+
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl shadow transition mt-2">
                     Konfirmasi Penarikan
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- JAVASCRIPT LOGIC (NO BUG & PERSISTEN LOCALSTORAGE) -->
+
+    <!-- ==================== JAVASCRIPT SYSTEM LOGIC ==================== -->
     <script>
-        // Harga dasar barang per Kg
-        const HARGA_BARANG = {
-            'Plastik': 3000,
-            'Besi': 5000,
-            'Kardus': 2000,
-            'Tembaga': 70000
-        };
+        // Data Harga Dasar
+        const HARGA = { 'Plastik': 3000, 'Besi': 5000, 'Kardus': 2000, 'Tembaga': 70000 };
 
-        // Inisialisasi Data dari LocalStorage
-        let dataApp = JSON.parse(localStorage.getItem('DUITIN_DATA')) || {
+        // Database LocalStorage
+        let appData = JSON.parse(localStorage.getItem('DUITIN_V2_DATA')) || {
+            user: { nama: 'Pengguna DUITIN', alamat: 'Bandung, Jawa Barat' },
             saldo: 0,
-            transaksi: []
+            transaksi: [],
+            galeri: [
+                'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=400&q=80',
+                'https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?auto=format&fit=crop&w=400&q=80'
+            ]
         };
 
-        // Simpan Data ke LocalStorage
-        function simpanData() {
-            localStorage.setItem('DUITIN_DATA', JSON.stringify(dataApp));
-            updateUI();
+        function simpan() {
+            localStorage.setItem('DUITIN_V2_DATA', JSON.stringify(appData));
+            updateStateUI();
         }
 
-        // Format Angka ke Rupiah
-        function formatRupiah(angka) {
-            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(angka);
+        function formatRp(num) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
         }
 
-        // Update Seluruh Komponen Antarmuka
-        function updateUI() {
-            document.getElementById('navSaldo').innerText = formatRupiah(dataApp.saldo);
-            document.getElementById('modalSaldoSaatIni').innerText = formatRupiah(dataApp.saldo);
-            renderRiwayat();
-            renderAdmin();
+        function updateStateUI() {
+            document.getElementById('headerSaldo').innerText = formatRp(appData.saldo);
+            document.getElementById('profileSaldo').innerText = formatRp(appData.saldo);
+            document.getElementById('profileNama').innerText = appData.user.nama;
+            document.getElementById('profileAlamat').innerText = appData.user.alamat;
+            renderGaleri();
+            renderStatusUser();
+            renderStatusAdmin();
         }
 
-        // Hitung Estimasi Nilai Jual
+        // --- SLIDER LOGIC ---
+        let currentSlide = 0;
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % 3;
+            document.getElementById('sliderWrapper').style.transform = `translateX(-${currentSlide * 100}%)`;
+            for (let i = 0; i < 3; i++) {
+                document.getElementById(`dot${i}`).className = i === currentSlide ? "w-2 h-2 rounded-full bg-white transition-all" : "w-2 h-2 rounded-full bg-white/50 transition-all";
+            }
+        }, 4000);
+
+        // --- MODAL CONTROLLER ---
+        function bukaModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function tutupModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        // --- SETOR BARANG LOGIC ---
         function hitungEstimasi() {
-            const kat = document.getElementById('kategori').value;
-            const kg = parseFloat(document.getElementById('jumlahKg').value) || 0;
-            const estimasi = (HARGA_BARANG[kat] || 0) * kg;
-            document.getElementById('estimasiNilai').innerText = formatRupiah(estimasi);
+            const kat = document.getElementById('setorKategori').value;
+            const kg = parseFloat(document.getElementById('setorKg').value) || 0;
+            const total = (HARGA[kat] || 0) * kg;
+            document.getElementById('setorEstimasi').innerText = formatRp(total);
         }
 
-        // Share Lokasi GPS Akurat
-        function dapatkanLokasiGPS() {
+        function ambilGPS() {
             if (navigator.geolocation) {
-                Swal.fire({
-                    title: 'Mendapatkan GPS...',
-                    text: 'Mohon tunggu sebentar',
-                    allowOutsideClick: false,
-                    didOpen: () => { Swal.showLoading(); }
-                });
-
+                Swal.fire({ title: 'Mencari GPS...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
                 navigator.geolocation.getCurrentPosition(
                     (pos) => {
-                        const lat = pos.coords.latitude;
-                        const lng = pos.coords.longitude;
-                        document.getElementById('koordinat').value = `${lat}, ${lng}`;
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Lokasi Akurat Ditemukan!',
-                            text: `Titik GPS: ${lat.toFixed(5)}, ${lng.toFixed(5)}`,
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
+                        const coords = `${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`;
+                        document.getElementById('setorGPS').value = coords;
+                        Swal.fire({ icon: 'success', title: 'GPS Berhasil!', text: coords, timer: 1500, showConfirmButton: false });
                     },
-                    (err) => {
-                        Swal.fire('Gagal Akses GPS', 'Silakan aktifkan izin lokasi di browser kamu atau isi alamat secara manual.', 'error');
-                    },
+                    () => Swal.fire('Gagal GPS', 'Aktifkan izin lokasi pada browser kamu.', 'error'),
                     { enableHighAccuracy: true }
                 );
-            } else {
-                Swal.fire('Fitur Tidak Didukung', 'Browser kamu tidak mendukung integrasi GPS.', 'warning');
             }
         }
 
-        // Handle Permintaan Penjemputan Barang
-        function handleProsesJual(e) {
+        function handleSetorBarang(e) {
             e.preventDefault();
-            const kategori = document.getElementById('kategori').value;
-            const namaProduk = document.getElementById('namaProduk').value;
-            const jumlahKg = parseFloat(document.getElementById('jumlahKg').value);
-            const koordinat = document.getElementById('koordinat').value;
-            const alamatDetail = document.getElementById('alamatDetail').value;
+            const kat = document.getElementById('setorKategori').value;
+            const nama = document.getElementById('setorNama').value;
+            const kg = parseFloat(document.getElementById('setorKg').value);
+            const gps = document.getElementById('setorGPS').value || 'Manual';
+            const alamat = document.getElementById('setorAlamat').value;
 
-            const totalEstimasi = HARGA_BARANG[kategori] * jumlahKg;
-
-            const transaksiBaru = {
+            const txBaru = {
                 id: 'DIT-' + Date.now(),
-                kategori,
-                namaProduk,
-                jumlahKg,
-                totalEstimasi,
-                koordinat: koordinat || 'Manual Location',
-                alamatDetail,
-                status: 'Menunggu Admin', // Status: Menunggu Admin, Dalam Penjemputan, Selesai
+                kategori: kat,
+                nama,
+                kg,
+                total: HARGA[kat] * kg,
+                gps,
+                alamat,
+                status: 'Menunggu Penjemputan',
                 tanggal: new Date().toLocaleString('id-ID')
             };
 
-            dataApp.transaksi.unshift(transaksiBaru);
-            simpanData();
+            appData.transaksi.unshift(txBaru);
+            simpan();
 
-            // Reset Form
-            document.getElementById('formSetor').reset();
-            document.getElementById('estimasiNilai').innerText = 'Rp 0';
+            e.target.reset();
+            document.getElementById('setorEstimasi').innerText = 'Rp 0';
+            tutupModal('modalProduk');
 
+            Swal.fire({ icon: 'success', title: 'Permintaan Terkirim!', text: 'Admin akan segera menjemput barang kamu.', confirmButtonColor: '#059669' });
+            bukaModal('modalProfil');
+        }
+
+        // --- GALERI UPLOAD & HAPUS LOGIC ---
+        function uploadFoto() {
+            const input = document.getElementById('inputFoto');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    appData.galeri.unshift(e.target.result);
+                    simpan();
+                    input.value = '';
+                    Swal.fire({ icon: 'success', title: 'Foto Terupload!', timer: 1200, showConfirmButton: false });
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function hapusFoto(index) {
             Swal.fire({
-                icon: 'success',
-                title: 'Permintaan Terkirim!',
-                text: 'Admin akan segera menuju ke lokasi kamu untuk penjemputan.',
-                confirmButtonColor: '#059669'
-            });
-
-            switchTab('riwayat');
-        }
-
-        // Render Riwayat Permintaan User
-        function renderRiwayat() {
-            const container = document.getElementById('daftarRiwayat');
-            if (dataApp.transaksi.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-8 bg-white rounded-2xl shadow-sm">
-                        <i class="fa-solid fa-box-open text-4xl text-gray-300 mb-2"></i>
-                        <p class="text-gray-500 text-sm">Belum ada permintaan penjemputan barang.</p>
-                    </div>`;
-                return;
-            }
-
-            container.innerHTML = dataApp.transaksi.map(item => {
-                let badgeStatus = '';
-                if(item.status === 'Menunggu Admin') {
-                    badgeStatus = '<span class="bg-yellow-100 text-yellow-800 text-xs px-2.5 py-1 rounded-full font-semibold">Menunggu Penjemputan</span>';
-                } else if(item.status === 'Dalam Penjemputan') {
-                    badgeStatus = '<span class="bg-blue-100 text-blue-800 text-xs px-2.5 py-1 rounded-full font-semibold">Penjemput Dalam Perjalanan</span>';
-                } else if(item.status === 'Selesai') {
-                    badgeStatus = '<span class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-semibold">Selesai & Saldo Masuk</span>';
+                title: 'Hapus Foto?',
+                text: 'Foto ini akan dihapus dari galeri.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: 'Hapus'
+            }).then((res) => {
+                if (res.isConfirmed) {
+                    appData.galeri.splice(index, 1);
+                    simpan();
                 }
-
-                const mapsUrl = item.koordinat.includes(',') ? `https://maps.google.com/?q=${item.koordinat}` : '#';
-
-                return `
-                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-                        <div class="flex justify-between items-start mb-2">
-                            <div>
-                                <h4 class="font-bold text-gray-800">${item.namaProduk} (${item.kategori})</h4>
-                                <p class="text-xs text-gray-400">${item.tanggal}</p>
-                            </div>
-                            ${badgeStatus}
-                        </div>
-                        <div class="text-sm text-gray-600 space-y-1 mb-3">
-                            <p><span class="font-medium">Berat:</span> ${item.jumlahKg} Kg</p>
-                            <p><span class="font-medium">Estimasi Nilai:</span> <span class="font-bold text-emerald-600">${formatRupiah(item.totalEstimasi)}</span></p>
-                            <p><span class="font-medium">Alamat:</span> ${item.alamatDetail}</p>
-                        </div>
-                        ${item.koordinat.includes(',') ? `
-                            <a href="${mapsUrl}" target="_blank" class="inline-flex items-center text-xs text-blue-600 font-semibold hover:underline">
-                                <i class="fa-solid fa-map-location-dot mr-1"></i> Lihat Titik Map Lokasi
-                            </a>
-                        ` : ''}
-                    </div>
-                `;
-            }).join('');
+            });
         }
 
-        // Render Panel Simulasi Admin
-        function renderAdmin() {
-            const container = document.getElementById('daftarAdmin');
-            const transaksiAktif = dataApp.transaksi.filter(t => t.status !== 'Selesai');
-
-            if (transaksiAktif.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-6 bg-gray-50 rounded-xl">
-                        <p class="text-gray-500 text-sm">Tidak ada tugas penjemputan pending.</p>
-                    </div>`;
+        function renderGaleri() {
+            const container = document.getElementById('containerGaleri');
+            if (appData.galeri.length === 0) {
+                container.innerHTML = `<p class="col-span-2 text-center text-slate-400 py-4 text-xs">Belum ada foto kegiatan.</p>`;
                 return;
             }
+            container.innerHTML = appData.galeri.map((img, i) => `
+                <div class="relative group rounded-xl overflow-hidden aspect-square border border-slate-200">
+                    <img src="${img}" class="w-full h-full object-cover">
+                    <button onclick="hapusFoto(${i})" class="absolute top-1 right-1 bg-red-600 text-white w-6 h-6 rounded-full text-[10px] flex items-center justify-center shadow hover:bg-red-700">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
 
-            container.innerHTML = transaksiAktif.map(item => `
-                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
-                    <div class="flex justify-between items-start mb-2">
-                        <div>
-                            <span class="text-xs font-bold text-gray-400">${item.id}</span>
-                            <h4 class="font-bold text-gray-800">${item.namaProduk} - ${item.jumlahKg} Kg</h4>
-                        </div>
-                        <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-1 rounded">${formatRupiah(item.totalEstimasi)}</span>
+        // --- PROFIL & ADMIN STATUS RENDERING ---
+        function switchTabProfil(tab) {
+            const secStatus = document.getElementById('secStatus');
+            const secAdmin = document.getElementById('secAdmin');
+            const btnStatus = document.getElementById('btnTabStatus');
+            const btnAdmin = document.getElementById('btnTabAdmin');
+
+            if (tab === 'status') {
+                secStatus.classList.remove('hidden');
+                secAdmin.classList.add('hidden');
+                btnStatus.className = "flex-1 py-2 font-bold text-emerald-600 border-b-2 border-emerald-600";
+                btnAdmin.className = "flex-1 py-2 font-semibold text-slate-400";
+            } else {
+                secAdmin.classList.remove('hidden');
+                secStatus.classList.add('hidden');
+                btnAdmin.className = "flex-1 py-2 font-bold text-emerald-600 border-b-2 border-emerald-600";
+                btnStatus.className = "flex-1 py-2 font-semibold text-slate-400";
+            }
+        }
+
+        function renderStatusUser() {
+            const container = document.getElementById('daftarStatusUser');
+            if (appData.transaksi.length === 0) {
+                container.innerHTML = `<p class="text-center text-slate-400 py-4">Belum ada transaksi.</p>`;
+                return;
+            }
+            container.innerHTML = appData.transaksi.map(t => `
+                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 space-y-1 mb-2">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-slate-800">${t.nama} (${t.kg} kg)</span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${t.status === 'Selesai' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${t.status}</span>
                     </div>
-                    <p class="text-xs text-gray-600 mb-1"><i class="fa-solid fa-location-dot text-red-500 mr-1"></i> ${item.alamatDetail}</p>
-                    <p class="text-xs text-gray-500 mb-3">GPS: ${item.koordinat}</p>
-                    
-                    <div class="flex space-x-2">
-                        ${item.status === 'Menunggu Admin' ? `
-                            <button onclick="prosesAdminStatus('${item.id}', 'Dalam Penjemputan')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition">
-                                <i class="fa-solid fa-truck mr-1"></i> Jalan Jemput
-                            </button>
-                        ` : ''}
-                        
-                        ${item.status === 'Dalam Penjemputan' ? `
-                            <button onclick="prosesAdminSelesai('${item.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition">
-                                <i class="fa-solid fa-circle-check mr-1"></i> Tiba & Cairkan Saldo User
-                            </button>
-                        ` : ''}
+                    <div class="flex justify-between text-[11px] text-slate-500">
+                        <span>Alamat: ${t.alamat}</span>
+                        <span class="font-bold text-emerald-600">${formatRp(t.total)}</span>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Ubah Status oleh Admin
-        function prosesAdminStatus(id, statusBaru) {
-            const idx = dataApp.transaksi.findIndex(t => t.id === id);
+        function renderStatusAdmin() {
+            const container = document.getElementById('daftarStatusAdmin');
+            const pending = appData.transaksi.filter(t => t.status !== 'Selesai');
+            if (pending.length === 0) {
+                container.innerHTML = `<p class="text-center text-slate-400 py-4">Tidak ada antrean jemput.</p>`;
+                return;
+            }
+            container.innerHTML = pending.map(t => `
+                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 space-y-1.5 mb-2">
+                    <div class="flex justify-between">
+                        <span class="font-bold text-slate-800">${t.nama} - ${t.kg} kg</span>
+                        <span class="font-extrabold text-emerald-600">${formatRp(t.total)}</span>
+                    </div>
+                    <p class="text-[10px] text-slate-500">Alamat: ${t.alamat} (GPS: ${t.gps})</p>
+                    <button onclick="selesaikanJemput('${t.id}')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 rounded-lg text-[11px]">
+                        Tiba & Cairkan Saldo User
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function selesaikanJemput(id) {
+            const idx = appData.transaksi.findIndex(t => t.id === id);
             if (idx !== -1) {
-                dataApp.transaksi[idx].status = statusBaru;
-                simpanData();
-                Swal.fire('Status Diperbarui', `Permintaan diubah menjadi: ${statusBaru}`, 'success');
+                appData.transaksi[idx].status = 'Selesai';
+                appData.saldo += appData.transaksi[idx].total;
+                simpan();
+                Swal.fire('Selesai!', 'Saldo berhasil dicairkan ke profil user.', 'success');
             }
         }
 
-        // Menyelesaikan Penjemputan & Menambah Saldo User
-        function prosesAdminSelesai(id) {
-            const idx = dataApp.transaksi.findIndex(t => t.id === id);
-            if (idx !== -1) {
-                const item = dataApp.transaksi[idx];
-                item.status = 'Selesai';
-                dataApp.saldo += item.totalEstimasi; // Saldo Otomatis Masuk
-                simpanData();
-
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Penjemputan Selesai!',
-                    text: `Saldo sebesar ${formatRupiah(item.totalEstimasi)} berhasil ditambahkan ke profil user.`,
-                    confirmButtonColor: '#059669'
-                });
-            }
-        }
-
-        // Modal Penarikan Saldo
+        // --- TARIK UANG LOGIC ---
         function bukaModalTarik() {
-            document.getElementById('modalTarik').classList.remove('hidden');
+            document.getElementById('modalTarikUang').classList.remove('hidden');
         }
 
-        function tutupModalTarik() {
-            document.getElementById('modalTarik').classList.add('hidden');
+        function updateLabelTarget() {
+            const m = document.getElementById('tarikMetode').value;
+            document.getElementById('labelTarget').innerText = (m === 'DANA' || m === 'OVO') ? 'Nomor HP E-Wallet' : 'Nomor Rekening';
         }
 
-        function toggleFormMetode() {
-            const metode = document.getElementById('metodePenarikan').value;
-            const label = document.getElementById('labelNomorTujuan');
-            if(metode === 'DANA' || metode === 'OVO') {
-                label.innerText = 'Nomor HP E-Wallet (' + metode + ')';
-            } else {
-                label.innerText = 'Nomor Rekening (' + metode + ')';
-            }
-        }
-
-        // Handle Permintaan Penarikan Uang
-        function handleTarikUang(e) {
+        function handleTarikPencairan(e) {
             e.preventDefault();
-            const nominal = parseFloat(document.getElementById('nominalPenarikan').value);
-            const metode = document.getElementById('metodePenarikan').value;
-            const noTujuan = document.getElementById('nomorTujuan').value;
+            const nom = parseFloat(document.getElementById('tarikNominal').value);
+            const met = document.getElementById('tarikMetode').value;
+            const target = document.getElementById('tarikTarget').value;
 
-            // Validasi Batas Minimal Rp 50.000
-            if (nominal < 50000) {
-                Swal.fire('Batas Penarikan Minimal', 'Penarikan saldo minimal adalah Rp 50.000.', 'warning');
+            if (nom < 50000) {
+                Swal.fire('Batas Penarikan', 'Minimal penarikan saldo adalah Rp 50.000', 'warning');
+                return;
+            }
+            if (nom > appData.saldo) {
+                Swal.fire('Saldo Kurang', `Saldo kamu saat ini ${formatRp(appData.saldo)}`, 'error');
                 return;
             }
 
-            // Validasi Kecukupan Saldo
-            if (nominal > dataApp.saldo) {
-                Swal.fire('Saldo Tidak Cukup', `Saldo kamu saat ini hanya ${formatRupiah(dataApp.saldo)}. Silakan kumpulkan lebih banyak barang bekas!`, 'error');
-                return;
-            }
-
-            // Kurangi Saldo
-            dataApp.saldo -= nominal;
-            simpanData();
-            tutupModalTarik();
+            appData.saldo -= nom;
+            simpan();
+            tutupModal('modalTarikUang');
 
             Swal.fire({
                 icon: 'success',
-                title: 'Penarikan Berhasil Diproses!',
-                html: `Penarikan sebesar <b>${formatRupiah(nominal)}</b> via <b>${metode} (${noTujuan})</b> sedang dikirim.`,
+                title: 'Penarikan Diproses!',
+                html: `Penarikan <b>${formatRp(nom)}</b> via <b>${met} (${target})</b> sedang dikirim.`,
                 confirmButtonColor: '#059669'
             });
         }
 
-        // Navigasi Tab
-        function switchTab(tab) {
-            const secForm = document.getElementById('sectionForm');
-            const secRiwayat = document.getElementById('sectionRiwayat');
-            const secAdmin = document.getElementById('sectionAdmin');
-
-            const btnForm = document.getElementById('tabFormBtn');
-            const btnRiwayat = document.getElementById('tabRiwayatBtn');
-            const btnAdmin = document.getElementById('tabAdminBtn');
-
-            // Hide All
-            secForm.classList.add('hidden');
-            secRiwayat.classList.add('hidden');
-            secAdmin.classList.add('hidden');
-
-            btnForm.className = "flex-1 py-2.5 text-center font-semibold text-gray-500 rounded-lg text-sm transition hover:text-emerald-600";
-            btnRiwayat.className = "flex-1 py-2.5 text-center font-semibold text-gray-500 rounded-lg text-sm transition hover:text-emerald-600";
-            btnAdmin.className = "flex-1 py-2.5 text-center font-semibold text-gray-500 rounded-lg text-sm transition hover:text-emerald-600";
-
-            if (tab === 'form') {
-                secForm.classList.remove('hidden');
-                btnForm.className = "flex-1 py-2.5 text-center font-bold text-emerald-600 border-b-2 border-emerald-600 rounded-lg text-sm transition";
-            } else if (tab === 'riwayat') {
-                secRiwayat.classList.remove('hidden');
-                btnRiwayat.className = "flex-1 py-2.5 text-center font-bold text-emerald-600 border-b-2 border-emerald-600 rounded-lg text-sm transition";
-            } else if (tab === 'admin') {
-                secAdmin.classList.remove('hidden');
-                btnAdmin.className = "flex-1 py-2.5 text-center font-bold text-emerald-600 border-b-2 border-emerald-600 rounded-lg text-sm transition";
-            }
-        }
-
-        // Load Awal
-        updateUI();
+        // Initial Load
+        updateStateUI();
     </script>
 </body>
 </html>
