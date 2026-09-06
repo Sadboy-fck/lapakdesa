@@ -11,6 +11,11 @@
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
+    <!-- FIREBASE SDK v10 (Compat Mode untuk Vanilla JS) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
         body {
@@ -56,10 +61,13 @@
                     <p class="text-[9px] text-emerald-100 font-medium mt-0.5">Sampah Jadi Duit & Sembako</p>
                 </div>
             </div>
-            <!-- Quick Saldo Badge -->
-            <div onclick="bukaModal('modalProfil')" class="bg-emerald-800/60 hover:bg-emerald-800 border border-emerald-400/30 px-3 py-1 rounded-full flex items-center space-x-1.5 cursor-pointer transition active:scale-95">
-                <i class="fa-solid fa-wallet text-yellow-300 text-xs"></i>
-                <span id="headerSaldo" class="text-xs font-bold">Rp 0</span>
+
+            <!-- Auth Status / Quick Saldo Badge -->
+            <div id="headerAuthBadge">
+                <button onclick="loginGoogle()" class="bg-white text-emerald-800 font-extrabold px-3 py-1 rounded-full text-xs shadow hover:bg-emerald-50 active:scale-95 transition flex items-center space-x-1">
+                    <i class="fa-brands fa-google text-red-500"></i>
+                    <span>Masuk</span>
+                </button>
             </div>
         </header>
 
@@ -108,29 +116,25 @@
                 </div>
             </div>
 
-            <!-- 4. MENU UTAMA (Grid Ikon + Label) -->
+            <!-- 4. MENU UTAMA -->
             <div>
                 <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 text-center">Menu Utama</h2>
                 <div class="grid grid-cols-4 gap-2.5 px-1">
-                    <!-- GRID 1: INFO (Hanya menampilkan info katalog & syarat) -->
                     <button onclick="bukaModal('modalInfo')" class="flex flex-col items-center justify-center p-2.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/60 rounded-2xl shadow-sm hover:shadow active:scale-90 transition-all">
                         <i class="fa-solid fa-circle-info text-xl text-emerald-600"></i>
                         <span class="text-[10px] font-extrabold text-emerald-800 mt-1 tracking-tight">INFO</span>
                     </button>
 
-                    <!-- GRID 2: GALLERY -->
                     <button onclick="bukaModal('modalGaleri')" class="flex flex-col items-center justify-center p-2.5 bg-blue-50 hover:bg-blue-100 border border-blue-200/60 rounded-2xl shadow-sm hover:shadow active:scale-90 transition-all">
                         <i class="fa-solid fa-camera text-xl text-blue-600"></i>
                         <span class="text-[10px] font-extrabold text-blue-800 mt-1 tracking-tight">GALLERY</span>
                     </button>
 
-                    <!-- GRID 3: FACT -->
                     <button onclick="bukaModal('modalFact')" class="flex flex-col items-center justify-center p-2.5 bg-purple-50 hover:bg-purple-100 border border-purple-200/60 rounded-2xl shadow-sm hover:shadow active:scale-90 transition-all">
                         <i class="fa-solid fa-lightbulb text-xl text-purple-600"></i>
                         <span class="text-[10px] font-extrabold text-purple-800 mt-1 tracking-tight">FACT</span>
                     </button>
 
-                    <!-- GRID 4: PROFIL -->
                     <button onclick="bukaModal('modalProfil')" class="flex flex-col items-center justify-center p-2.5 bg-amber-50 hover:bg-amber-100 border border-amber-200/60 rounded-2xl shadow-sm hover:shadow active:scale-90 transition-all">
                         <i class="fa-solid fa-user-gear text-xl text-amber-600"></i>
                         <span class="text-[10px] font-extrabold text-amber-800 mt-1 tracking-tight">PROFIL</span>
@@ -138,8 +142,8 @@
                 </div>
             </div>
 
-            <!-- FITUR: LAYANAN UTAMA (Banner Khusus Transaksi / Form Jual Sampah) -->
-            <div onclick="bukaModal('modalJual')" class="bg-gradient-to-br from-emerald-600 via-teal-600 to-emerald-800 rounded-2xl p-4 text-white shadow-lg relative overflow-hidden cursor-pointer active:scale-98 transition group">
+            <!-- BANNER LAYANAN UTAMA (Form Jual Sampah) -->
+            <div onclick="bukaFormJual()" class="bg-gradient-to-br from-emerald-600 via-teal-600 to-emerald-800 rounded-2xl p-4 text-white shadow-lg relative overflow-hidden cursor-pointer active:scale-98 transition group">
                 <div class="absolute -right-4 -bottom-4 opacity-20 group-hover:scale-110 transition-transform">
                     <i class="fa-solid fa-truck-fast text-8xl"></i>
                 </div>
@@ -155,7 +159,7 @@
                 </div>
             </div>
 
-            <!-- FEED AKTIVITAS TERKINI (Live Social Proof) -->
+            <!-- FEED AKTIVITAS TERKINI (Real-time Firestore) -->
             <div class="space-y-2">
                 <div class="flex justify-between items-center px-1">
                     <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Aktivitas Penjemputan</h3>
@@ -164,7 +168,7 @@
                     </span>
                 </div>
                 <div id="liveFeedContainer" class="space-y-1.5">
-                    <!-- Feed di-render dinamis via JS -->
+                    <!-- Feed di-render dinamis dari Firestore -->
                 </div>
             </div>
 
@@ -175,7 +179,7 @@
             <div class="bg-slate-100 border border-slate-200/80 rounded-xl p-3 text-center shadow-inner">
                 <p class="text-[10px] font-bold text-slate-600 flex items-center justify-center space-x-1">
                     <i class="fa-solid fa-leaf text-emerald-600"></i>
-                    <span>DUITIN App v2.0 • Clean & Green</span>
+                    <span>DUITIN App v2.5 • Powered by Firebase</span>
                 </p>
                 <p class="text-[9px] text-slate-400 mt-0.5">© 2026 DUITIN Platform. Hak Cipta Dilindungi.</p>
             </div>
@@ -183,39 +187,9 @@
 
     </div>
 
-    <!-- POPUP PROMO & WELCOME -->
-    <div id="modalPromo" class="fixed inset-0 bg-black/70 backdrop-blur-md z-[100] flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-xs rounded-3xl overflow-hidden shadow-2xl animate-modal-center text-center">
-            <div class="bg-gradient-to-br from-emerald-500 to-teal-700 p-6 text-white relative">
-                <button onclick="tutupModal('modalPromo')" class="absolute top-3 right-3 text-white/80 hover:text-white bg-black/20 rounded-full w-7 h-7 flex items-center justify-center text-xs">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-                <div class="w-16 h-16 bg-white/20 rounded-2xl backdrop-blur-md mx-auto flex items-center justify-center mb-3 border border-white/30 shadow-inner">
-                    <i class="fa-solid fa-recycle text-3xl text-yellow-300"></i>
-                </div>
-                <h3 class="font-extrabold text-lg leading-tight">Ubah Sampah Jadi Cuan! 💵</h3>
-                <p class="text-[11px] text-emerald-100 mt-1">Dapatkan saldo instan & sembako gratis dari sampah rumah tanggamu.</p>
-            </div>
-            <div class="p-5 space-y-3">
-                <div class="bg-amber-50 border border-amber-200/80 rounded-xl p-2.5 text-left text-[11px] text-amber-900 flex items-center space-x-2">
-                    <i class="fa-solid fa-fire text-amber-500 text-sm shrink-0"></i>
-                    <span>Promo minggu ini: Harga Kardus & Tembaga naik hingga 15%!</span>
-                </div>
-                <button onclick="tutupModal('modalPromo'); bukaModal('modalJual')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3 rounded-xl shadow-lg hover:shadow-xl transition active:scale-95 text-xs flex items-center justify-center space-x-2">
-                    <i class="fa-solid fa-cart-plus"></i>
-                    <span>Jual Sampah Sekarang</span>
-                </button>
-                <button onclick="tutupModal('modalPromo')" class="text-[11px] font-semibold text-slate-400 hover:text-slate-600 block mx-auto">
-                    Nanti Saja
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL 1: MURNI HANYA INFORMASI PRODUK & HARGA (Untuk Grid INFO) -->
+    <!-- MODAL INFO PRODUK & HARGA -->
     <div id="modalInfo" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-sm rounded-2xl p-4 shadow-2xl max-h-[88vh] overflow-y-auto animate-modal-center space-y-4">
-            
             <div class="flex justify-between items-center border-b border-slate-100 pb-2">
                 <div class="flex items-center space-x-2">
                     <div class="bg-emerald-100 text-emerald-600 p-1.5 rounded-lg text-xs">
@@ -228,68 +202,30 @@
                 </button>
             </div>
 
-            <!-- Daftar Produk & Harga -->
-            <div>
-                <p class="text-[11px] font-semibold text-slate-500 mb-2">Kategori Daur Ulang & Estimasi Harga:</p>
-                <div class="grid grid-cols-2 gap-2 text-xs">
-                    <div class="bg-emerald-50 border border-emerald-200/60 p-2.5 rounded-xl space-y-1">
-                        <div class="flex items-center justify-between">
-                            <span class="font-extrabold text-slate-700 text-[11px]">Plastik</span>
-                            <i class="fa-solid fa-bottle-water text-emerald-600 text-xs"></i>
-                        </div>
-                        <p class="font-black text-emerald-700 text-xs">Rp 3.000 <span class="text-[9px] text-slate-500 font-normal">/ kg</span></p>
-                        <p class="text-[9px] text-slate-400">Botol, gelas mineral, & galon bekas.</p>
-                    </div>
-
-                    <div class="bg-emerald-50 border border-emerald-200/60 p-2.5 rounded-xl space-y-1">
-                        <div class="flex items-center justify-between">
-                            <span class="font-extrabold text-slate-700 text-[11px]">Besi</span>
-                            <i class="fa-solid fa-cubes text-emerald-600 text-xs"></i>
-                        </div>
-                        <p class="font-black text-emerald-700 text-xs">Rp 5.000 <span class="text-[9px] text-slate-500 font-normal">/ kg</span></p>
-                        <p class="text-[9px] text-slate-400">Besi padat, seng, & pipa besi bekas.</p>
-                    </div>
-
-                    <div class="bg-emerald-50 border border-emerald-200/60 p-2.5 rounded-xl space-y-1">
-                        <div class="flex items-center justify-between">
-                            <span class="font-extrabold text-slate-700 text-[11px]">Kardus</span>
-                            <i class="fa-solid fa-box text-emerald-600 text-xs"></i>
-                        </div>
-                        <p class="font-black text-emerald-700 text-xs">Rp 2.000 <span class="text-[9px] text-slate-500 font-normal">/ kg</span></p>
-                        <p class="text-[9px] text-slate-400">Kardus tebal, duplex, & kertas koran.</p>
-                    </div>
-
-                    <div class="bg-emerald-50 border border-emerald-200/60 p-2.5 rounded-xl space-y-1">
-                        <div class="flex items-center justify-between">
-                            <span class="font-extrabold text-slate-700 text-[11px]">Tembaga</span>
-                            <i class="fa-solid fa-bolt text-emerald-600 text-xs"></i>
-                        </div>
-                        <p class="font-black text-emerald-700 text-xs">Rp 70.000 <span class="text-[9px] text-slate-500 font-normal">/ kg</span></p>
-                        <p class="text-[9px] text-slate-400">Kabel kupas & kumparan dinamo.</p>
-                    </div>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+                <div class="bg-emerald-50 border border-emerald-200/60 p-2.5 rounded-xl space-y-1">
+                    <span class="font-extrabold text-slate-700 text-[11px]">Plastik</span>
+                    <p class="font-black text-emerald-700 text-xs">Rp 3.000 <span class="text-[9px] text-slate-500 font-normal">/ kg</span></p>
                 </div>
-            </div>
-
-            <!-- Kriteria Sampah Diterima -->
-            <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-3 space-y-1.5 text-[11px] text-slate-600">
-                <p class="font-extrabold text-slate-800 flex items-center space-x-1.5">
-                    <i class="fa-solid fa-clipboard-check text-emerald-600"></i>
-                    <span>Kriteria Sampah Diterima</span>
-                </p>
-                <ul class="list-disc list-inside space-y-1 text-slate-500 text-[10px] pl-1">
-                    <li>Sampah dalam kondisi relatif bersih dan tidak basah kuyup.</li>
-                    <li>Botol plastik sebaiknya dikosongkan dari sisa air.</li>
-                    <li>Minimal berat penjemputan gabungan total adalah 5 kg.</li>
-                    <li>Harga dapat berubah sewaktu-waktu mengikuti perkembangan pasar daur ulang.</li>
-                </ul>
+                <div class="bg-emerald-50 border border-emerald-200/60 p-2.5 rounded-xl space-y-1">
+                    <span class="font-extrabold text-slate-700 text-[11px]">Besi</span>
+                    <p class="font-black text-emerald-700 text-xs">Rp 5.000 <span class="text-[9px] text-slate-500 font-normal">/ kg</span></p>
+                </div>
+                <div class="bg-emerald-50 border border-emerald-200/60 p-2.5 rounded-xl space-y-1">
+                    <span class="font-extrabold text-slate-700 text-[11px]">Kardus</span>
+                    <p class="font-black text-emerald-700 text-xs">Rp 2.000 <span class="text-[9px] text-slate-500 font-normal">/ kg</span></p>
+                </div>
+                <div class="bg-emerald-50 border border-emerald-200/60 p-2.5 rounded-xl space-y-1">
+                    <span class="font-extrabold text-slate-700 text-[11px]">Tembaga</span>
+                    <p class="font-black text-emerald-700 text-xs">Rp 70.000 <span class="text-[9px] text-slate-500 font-normal">/ kg</span></p>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL 2: FORM TRANSAKSI JUAL BARANG (Khusus Tombol Layanan Utama) -->
+    <!-- MODAL FORM JUAL SAMPAH -->
     <div id="modalJual" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-sm rounded-2xl p-4 shadow-2xl max-h-[88vh] overflow-y-auto animate-modal-center space-y-3.5">
-            
             <div class="flex justify-between items-center border-b border-slate-100 pb-2">
                 <div class="flex items-center space-x-2">
                     <div class="bg-emerald-100 text-emerald-600 p-1.5 rounded-lg text-xs">
@@ -302,9 +238,7 @@
                 </button>
             </div>
 
-            <!-- FORM JUAL BARANG -->
             <form onsubmit="handleJualSampah(event)" class="space-y-3 text-xs">
-                <!-- 1. PILIH KATEGORI BARANG -->
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1 text-[11px]">Pilih Kategori Barang</label>
                     <select id="jualKategori" onchange="hitungTotalJual()" class="w-full border border-slate-200 rounded-xl px-2.5 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium" required>
@@ -316,40 +250,34 @@
                     </select>
                 </div>
 
-                <!-- 2. BANYAKNYA (KG) -->
                 <div>
                     <label class="block font-semibold text-slate-700 mb-1 text-[11px]">Banyaknya (Kg)</label>
                     <input type="number" id="jualBerat" min="1" step="0.5" placeholder="Contoh: 5" oninput="hitungTotalJual()" class="w-full border border-slate-200 rounded-xl px-2.5 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium" required>
-                    <p class="text-[9px] text-slate-400 mt-0.5">*Minimal penjemputan total gabungan 5 kg.</p>
                 </div>
 
-                <!-- 3. TOTAL HARGA -->
                 <div class="bg-emerald-100/70 border border-emerald-300/80 p-2.5 rounded-xl flex justify-between items-center">
                     <span class="font-bold text-emerald-900 text-[11px]">Total Estimasi Harga:</span>
                     <span id="jualTotal" class="font-black text-emerald-800 text-sm">Rp 0</span>
                 </div>
 
-                <!-- 4. AKTIFKAN LOKASI SHARE (GPS) -->
                 <div class="space-y-1">
                     <label class="block font-semibold text-slate-700 text-[11px]">Lokasi Penjemputan</label>
                     <button type="button" onclick="ambilLokasiGPS()" class="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-bold py-2 rounded-xl text-[11px] flex items-center justify-center space-x-1.5 transition active:scale-95">
                         <i class="fa-solid fa-location-crosshairs text-blue-600"></i>
                         <span id="btnTextGps">Aktifkan Lokasi Share (GPS)</span>
                     </button>
-                    <input type="hidden" id="jualGps" value="Lokasi Manual Bandung">
+                    <input type="hidden" id="jualGps" value="Lokasi GPS Tidak Diberikan">
                 </div>
 
-                <!-- 5. TOMBOL JUAL -->
                 <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-2.5 rounded-xl shadow-lg hover:shadow-xl transition active:scale-95 text-xs flex items-center justify-center space-x-2 mt-2">
                     <i class="fa-solid fa-paper-plane"></i>
-                    <span>Jual Sampah Sekarang</span>
+                    <span>Kirim Pesanan</span>
                 </button>
             </form>
-
         </div>
     </div>
 
-    <!-- MODAL GALERI -->
+    <!-- MODAL GALERI (Khusus Admin yang Bisa Upload) -->
     <div id="modalGaleri" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-sm rounded-2xl p-4 shadow-2xl max-h-[85vh] overflow-y-auto animate-modal-center">
             <div class="flex justify-between items-center mb-3">
@@ -364,11 +292,12 @@
                 </button>
             </div>
 
-            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 mb-3 text-xs">
-                <p class="font-semibold text-slate-700 mb-1.5"><i class="fa-solid fa-cloud-arrow-up text-blue-500 mr-1"></i> Upload Foto Baru</p>
+            <!-- Upload Section (Hanya tampil untuk Role Admin) -->
+            <div id="adminUploadSection" class="hidden bg-slate-50 p-2.5 rounded-xl border border-slate-200 mb-3 text-xs">
+                <p class="font-semibold text-slate-700 mb-1.5"><i class="fa-solid fa-cloud-arrow-up text-blue-500 mr-1"></i> Upload Foto Baru (Admin)</p>
                 <div class="flex space-x-1.5">
                     <input type="file" id="inputFoto" accept="image/*" class="w-full border border-slate-200 rounded-lg bg-white px-2 py-1 text-[10px]">
-                    <button onclick="uploadFoto()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-3 py-1 rounded-lg shrink-0 text-xs">
+                    <button onclick="uploadFotoGaleri()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-3 py-1 rounded-lg shrink-0 text-xs">
                         Upload
                     </button>
                 </div>
@@ -378,235 +307,284 @@
         </div>
     </div>
 
-    <!-- MODAL FACT APLIKASI -->
+    <!-- MODAL FACT -->
     <div id="modalFact" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-sm rounded-2xl p-4 shadow-2xl max-h-[85vh] overflow-y-auto animate-modal-center">
             <div class="flex justify-between items-center mb-3">
-                <div class="flex items-center space-x-2">
-                    <div class="bg-purple-100 text-purple-600 p-1.5 rounded-lg text-xs">
-                        <i class="fa-solid fa-lightbulb"></i>
-                    </div>
-                    <h3 class="font-bold text-slate-800 text-sm">Fact & Tentang DUITIN</h3>
-                </div>
+                <h3 class="font-bold text-slate-800 text-sm">Fact & Tentang DUITIN</h3>
                 <button onclick="tutupModal('modalFact')" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 text-xs">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-
-            <div class="space-y-2.5 text-xs text-slate-600">
-                <div class="bg-purple-50 p-2.5 rounded-xl border border-purple-100">
-                    <h4 class="font-bold text-purple-900 mb-1 flex items-center">
-                        <i class="fa-solid fa-earth-americas mr-1"></i> Apa itu DUITIN?
-                    </h4>
-                    <p class="text-[11px]">DUITIN adalah platform daur ulang berbasis masyarakat yang mengubah sampah rumah tangga menjadi sumber pendapatan digital atau sembako.</p>
-                </div>
-
-                <div class="space-y-1.5">
-                    <h4 class="font-bold text-slate-800 text-xs">Fakta Pengelolaan Sampah:</h4>
-                    <div class="flex items-start space-x-2 bg-slate-50 p-2 rounded-lg text-[11px]">
-                        <i class="fa-solid fa-check-circle text-emerald-500 mt-0.5"></i>
-                        <p>1 Ton kardus bekas menyelamatkan 17 pohon dewasa.</p>
-                    </div>
-                    <div class="flex items-start space-x-2 bg-slate-50 p-2 rounded-lg text-[11px]">
-                        <i class="fa-solid fa-check-circle text-emerald-500 mt-0.5"></i>
-                        <p>Tembaga memiliki nilai daur ulang paling tinggi.</p>
-                    </div>
-                    <div class="flex items-start space-x-2 bg-slate-50 p-2 rounded-lg text-[11px]">
-                        <i class="fa-solid fa-check-circle text-emerald-500 mt-0.5"></i>
-                        <p>Penjemputan gratis ongkir langsung ke rumah kamu.</p>
-                    </div>
-                </div>
-            </div>
+            <p class="text-xs text-slate-600">DUITIN adalah platform terintegrasi pengelolaan sampah daur ulang berbasis komunitas.</p>
         </div>
     </div>
 
-    <!-- MODAL PROFIL USER & SALDO -->
+    <!-- MODAL PROFIL USER / ADMIN -->
     <div id="modalProfil" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-sm rounded-2xl p-4 shadow-2xl max-h-[85vh] overflow-y-auto animate-modal-center">
-            <div class="flex justify-between items-center mb-3">
+        <div class="bg-white w-full max-w-sm rounded-2xl p-4 shadow-2xl max-h-[85vh] overflow-y-auto animate-modal-center space-y-3">
+            <div class="flex justify-between items-center mb-1">
                 <div class="flex items-center space-x-2">
                     <div class="bg-amber-100 text-amber-600 p-1.5 rounded-lg text-xs">
                         <i class="fa-solid fa-user-gear"></i>
                     </div>
-                    <h3 class="font-bold text-slate-800 text-sm">Profil & Saldo Saya</h3>
+                    <h3 class="font-bold text-slate-800 text-sm">Profil Saya</h3>
                 </div>
                 <button onclick="tutupModal('modalProfil')" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 text-xs">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
 
-            <div class="bg-gradient-to-br from-amber-500 to-yellow-600 rounded-xl p-3.5 text-white shadow-sm mb-3 space-y-2.5">
-                <div class="flex items-center space-x-2.5">
-                    <div class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center font-bold text-base border border-white/40">
-                        <i class="fa-solid fa-user"></i>
-                    </div>
-                    <div>
-                        <h4 id="profileNama" class="font-extrabold text-sm leading-tight">Pengguna DUITIN</h4>
-                        <p id="profileAlamat" class="text-[10px] text-amber-100">Bandung, Jawa Barat</p>
-                    </div>
-                </div>
-                <div class="pt-2 border-t border-white/20 flex justify-between items-end">
-                    <div>
-                        <p class="text-[9px] text-amber-100 uppercase tracking-wider">Total Saldo Terkumpul</p>
-                        <p id="profileSaldo" class="text-lg font-black">Rp 0</p>
-                    </div>
-                    <button onclick="bukaModalTarik()" class="bg-white text-amber-900 font-extrabold text-[11px] px-3 py-1.5 rounded-lg shadow hover:bg-amber-50 active:scale-95 transition flex items-center space-x-1">
-                        <i class="fa-solid fa-hand-holding-dollar text-emerald-600"></i>
-                        <span>Tarik Uang</span>
-                    </button>
-                </div>
-            </div>
-
-            <div class="flex border-b border-slate-200 mb-2.5 text-xs">
-                <button id="btnTabStatus" onclick="switchTabProfil('status')" class="flex-1 py-1.5 font-bold text-emerald-600 border-b-2 border-emerald-600 text-[11px]">Status Jemput</button>
-                <button id="btnTabAdmin" onclick="switchTabProfil('admin')" class="flex-1 py-1.5 font-semibold text-slate-400 text-[11px]">Simulasi Admin</button>
-            </div>
-
-            <div id="secStatus" class="space-y-1.5 text-xs">
-                <div id="daftarStatusUser"></div>
-            </div>
-
-            <div id="secAdmin" class="hidden space-y-1.5 text-xs">
-                <p class="text-slate-500 text-[10px] mb-1.5">Admin menyetujui penjemputan & mencairkan saldo ke pengguna.</p>
-                <div id="daftarStatusAdmin"></div>
+            <div id="profilContent">
+                <!-- Diisi via JS berdasarkan status login -->
             </div>
         </div>
     </div>
 
-    <!-- SUB-MODAL: FORM TARIK UANG -->
+    <!-- MODAL TARIK UANG -->
     <div id="modalTarikUang" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
-        <div class="bg-white w-full max-w-xs rounded-2xl p-4 shadow-2xl animate-modal-center text-xs">
-            <div class="flex justify-between items-center mb-2.5">
+        <div class="bg-white w-full max-w-xs rounded-2xl p-4 shadow-2xl animate-modal-center text-xs space-y-2.5">
+            <div class="flex justify-between items-center">
                 <h4 class="font-bold text-slate-800 text-xs">Penarikan Saldo</h4>
                 <button onclick="tutupModal('modalTarikUang')" class="text-slate-400 hover:text-slate-600">
                     <i class="fa-solid fa-xmark text-base"></i>
                 </button>
             </div>
-            
-            <p class="text-slate-500 text-[11px] mb-2.5">Minimal penarikan saldo: <span class="font-bold text-emerald-600">Rp 50.000</span>.</p>
 
             <form onsubmit="handleTarikPencairan(event)" class="space-y-2">
                 <div>
                     <label class="block font-semibold text-slate-700 mb-0.5">Metode Penarikan</label>
-                    <select id="tarikMetode" onchange="updateLabelTarget()" class="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
-                        <option value="" disabled selected>-- Pilih Metode --</option>
+                    <select id="tarikMetode" class="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
                         <option value="DANA">DANA</option>
                         <option value="OVO">OVO</option>
                         <option value="Bank BCA">Bank BCA</option>
-                        <option value="Bank Mandiri">Bank Mandiri</option>
                         <option value="Bank BRI">Bank BRI</option>
                     </select>
                 </div>
-
                 <div>
-                    <label id="labelTarget" class="block font-semibold text-slate-700 mb-0.5">Nomor Akun / Rekening</label>
-                    <input type="number" id="tarikTarget" placeholder="Contoh: 081234567890" class="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
+                    <label class="block font-semibold text-slate-700 mb-0.5">Nomor Akun/Rekening</label>
+                    <input type="number" id="tarikTarget" placeholder="081234567890" class="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
                 </div>
-
                 <div>
                     <label class="block font-semibold text-slate-700 mb-0.5">Nominal (Rp)</label>
-                    <input type="number" id="tarikNominal" min="50000" step="5000" placeholder="Min 50000" class="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
+                    <input type="number" id="tarikNominal" min="50000" placeholder="Min 50000" class="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
                 </div>
-
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl shadow transition active:scale-95 mt-1.5">
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl shadow transition active:scale-95">
                     Konfirmasi Penarikan
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- SCRIPT SYSTEM LOGIC -->
+    <!-- SCRIPT FIREBASE LOGIC -->
     <script>
-        const HARGA = { 'Plastik': 3000, 'Besi': 5000, 'Kardus': 2000, 'Tembaga': 70000 };
-
-        let appData = JSON.parse(localStorage.getItem('DUITIN_V2_DATA')) || {
-            user: { nama: 'Pengguna DUITIN', alamat: 'Bandung, Jawa Barat' },
-            saldo: 0,
-            transaksi: [],
-            galeri: [
-                'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=400&q=80',
-                'https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?auto=format&fit=crop&w=400&q=80'
-            ]
+        // -------------------------------------------------------------
+        // 1. FIREBASE CONFIGURATION (GANTI DENGAN KEYS DARI FIREBASE CONSOLE)
+        // -------------------------------------------------------------
+        const firebaseConfig = {
+            apiKey: "PASTE_API_KEY_DI_SINI",
+            authDomain: "PASTE_PROJECT_ID.firebaseapp.com",
+            projectId: "PASTE_PROJECT_ID",
+            storageBucket: "PASTE_PROJECT_ID.appspot.com",
+            messagingSenderId: "PASTE_SENDER_ID",
+            appId: "PASTE_APP_ID"
         };
 
-        const dummyLiveFeed = [
-            { nama: 'Budi S.', lokasi: 'Coblong', barang: '12kg Kardus', status: 'Selesai' },
-            { nama: 'Rina M.', lokasi: 'Cicendo', barang: '5kg Tembaga', status: 'Selesai' },
-            { nama: 'Ahmad F.', lokasi: 'Regol', barang: '8kg Botol Plastik', status: 'Dalam Penjemputan' }
-        ];
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const HARGA = { 'Plastik': 3000, 'Besi': 5000, 'Kardus': 2000, 'Tembaga': 70000 };
 
-        function simpan() {
-            localStorage.setItem('DUITIN_V2_DATA', JSON.stringify(appData));
-            updateStateUI();
+        let currentUser = null;
+        let currentUserData = null;
+
+        // -------------------------------------------------------------
+        // 2. AUTHENTICATION (Google Login)
+        // -------------------------------------------------------------
+        function loginGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider)
+                .catch(err => Swal.fire('Gagal Login', err.message, 'error'));
         }
 
-        function formatRp(num) {
-            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+        function logout() {
+            auth.signOut().then(() => {
+                tutupModal('modalProfil');
+                Swal.fire({ icon: 'success', title: 'Berhasil Keluar', timer: 1200, showConfirmButton: false });
+            });
         }
 
-        function updateStateUI() {
-            document.getElementById('headerSaldo').innerText = formatRp(appData.saldo);
-            document.getElementById('profileSaldo').innerText = formatRp(appData.saldo);
-            document.getElementById('profileNama').innerText = appData.user.nama;
-            document.getElementById('profileAlamat').innerText = appData.user.alamat;
+        // Listener Status Login (Real-time)
+        auth.onAuthStateChanged(async (user) => {
+            currentUser = user;
+            if (user) {
+                // Ambil atau buat dokumen user di Firestore
+                const userRef = db.collection('users').doc(user.uid);
+                const docSnap = await userRef.get();
 
-            renderLiveFeed();
-            renderGaleri();
-            renderStatusUser();
-            renderStatusAdmin();
+                if (!docSnap.exists) {
+                    currentUserData = {
+                        nama: user.displayName || 'Pengguna DUITIN',
+                        email: user.email,
+                        alamat: 'Bandung, Jawa Barat',
+                        role: 'user', // Default role
+                        saldo: 0
+                    };
+                    await userRef.set(currentUserData);
+                } else {
+                    currentUserData = docSnap.data();
+                }
+
+                // Dengarkan perubahan data profil user secara real-time
+                userRef.onSnapshot(snap => {
+                    if (snap.exists) {
+                        currentUserData = snap.data();
+                        renderHeaderBadge();
+                        renderProfilModal();
+                    }
+                });
+
+                // Tampilkan bagian khusus Admin jika role-nya admin
+                if (currentUserData.role === 'admin') {
+                    document.getElementById('adminUploadSection').classList.remove('hidden');
+                } else {
+                    document.getElementById('adminUploadSection').classList.add('hidden');
+                }
+
+                listenUserOrders();
+            } else {
+                currentUserData = null;
+                renderHeaderBadge();
+                renderProfilModal();
+                document.getElementById('adminUploadSection').classList.add('hidden');
+            }
+        });
+
+        function renderHeaderBadge() {
+            const container = document.getElementById('headerAuthBadge');
+            if (currentUser && currentUserData) {
+                container.innerHTML = `
+                    <div onclick="bukaModal('modalProfil')" class="bg-emerald-800/60 hover:bg-emerald-800 border border-emerald-400/30 px-3 py-1 rounded-full flex items-center space-x-1.5 cursor-pointer transition active:scale-95">
+                        <i class="fa-solid fa-wallet text-yellow-300 text-xs"></i>
+                        <span class="text-xs font-bold">${formatRp(currentUserData.saldo || 0)}</span>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <button onclick="loginGoogle()" class="bg-white text-emerald-800 font-extrabold px-3 py-1 rounded-full text-xs shadow hover:bg-emerald-50 active:scale-95 transition flex items-center space-x-1">
+                        <i class="fa-brands fa-google text-red-500"></i>
+                        <span>Masuk</span>
+                    </button>
+                `;
+            }
         }
 
-        function renderLiveFeed() {
-            const container = document.getElementById('liveFeedContainer');
-            const userFeed = appData.transaksi.map(t => ({
-                nama: 'Saya',
-                lokasi: 'Bandung',
-                barang: `${t.kg}kg ${t.kategori}`,
-                status: t.status
-            }));
+        // -------------------------------------------------------------
+        // 3. EDIT PROFIL USER
+        // -------------------------------------------------------------
+        async function handleUpdateProfil(e) {
+            e.preventDefault();
+            if (!currentUser) return;
             
-            const list = [...userFeed, ...dummyLiveFeed].slice(0, 3);
+            const namaBaru = document.getElementById('editNama').value;
+            const alamatBaru = document.getElementById('editAlamat').value;
 
-            container.innerHTML = list.map(item => `
-                <div class="bg-slate-50 border border-slate-200/70 p-2 rounded-xl flex justify-between items-center text-xs">
-                    <div class="flex items-center space-x-2">
-                        <div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-extrabold">
-                            <i class="fa-solid fa-truck"></i>
-                        </div>
+            try {
+                await db.collection('users').doc(currentUser.uid).update({
+                    nama: namaBaru,
+                    alamat: alamatBaru
+                });
+                Swal.fire({ icon: 'success', title: 'Profil Diperbarui!', timer: 1200, showConfirmButton: false });
+            } catch (err) {
+                Swal.fire('Gagal Simpan', err.message, 'error');
+            }
+        }
+
+        function renderProfilModal() {
+            const container = document.getElementById('profilContent');
+            if (!currentUser) {
+                container.innerHTML = `
+                    <div class="text-center py-6 space-y-3">
+                        <i class="fa-solid fa-lock text-4xl text-slate-300"></i>
+                        <p class="text-xs text-slate-500">Silakan masuk menggunakan akun Google untuk mengakses profil & fitur transaksi.</p>
+                        <button onclick="loginGoogle()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl text-xs flex items-center justify-center space-x-2">
+                            <i class="fa-brands fa-google"></i>
+                            <span>Masuk dengan Google</span>
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            const isAdmin = currentUserData.role === 'admin';
+
+            container.innerHTML = `
+                <div class="bg-gradient-to-br ${isAdmin ? 'from-purple-600 to-indigo-700' : 'from-amber-500 to-yellow-600'} rounded-xl p-3.5 text-white shadow-sm space-y-2">
+                    <div class="flex items-center space-x-2.5">
+                        <img src="${currentUser.photoURL || 'https://via.placeholder.com/40'}" class="w-10 h-10 rounded-full border border-white/50">
                         <div>
-                            <p class="font-bold text-slate-800 text-[11px]">${item.nama} <span class="text-slate-400 font-normal">(${item.lokasi})</span></p>
-                            <p class="text-[10px] text-slate-500">${item.barang}</p>
+                            <h4 class="font-extrabold text-sm leading-tight">${currentUserData.nama}</h4>
+                            <span class="text-[9px] ${isAdmin ? 'bg-purple-900' : 'bg-amber-800'} px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">${currentUserData.role}</span>
                         </div>
                     </div>
-                    <span class="text-[9px] font-bold px-2 py-0.5 rounded-full ${item.status === 'Selesai' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
-                        ${item.status}
-                    </span>
+                    ${!isAdmin ? `
+                        <div class="pt-2 border-t border-white/20 flex justify-between items-end">
+                            <div>
+                                <p class="text-[9px] text-amber-100 uppercase">Saldo Terkumpul</p>
+                                <p class="text-lg font-black">${formatRp(currentUserData.saldo || 0)}</p>
+                            </div>
+                            <button onclick="bukaModalTarik()" class="bg-white text-amber-900 font-extrabold text-[11px] px-3 py-1.5 rounded-lg shadow active:scale-95 transition">Tarik Uang</button>
+                        </div>
+                    ` : ''}
                 </div>
-            `).join('');
+
+                ${!isAdmin ? `
+                    <form onsubmit="handleUpdateProfil(event)" class="space-y-2 text-xs pt-2">
+                        <p class="font-bold text-slate-700 text-[11px]">Ubah Data Profil:</p>
+                        <div>
+                            <label class="block text-slate-500 text-[10px]">Nama Lengkap</label>
+                            <input type="text" id="editNama" value="${currentUserData.nama}" class="w-full border border-slate-200 rounded-lg p-2 focus:ring-2 focus:ring-emerald-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-slate-500 text-[10px]">Alamat Penjemputan</label>
+                            <textarea id="editAlamat" class="w-full border border-slate-200 rounded-lg p-2 focus:ring-2 focus:ring-emerald-500" rows="2" required>${currentUserData.alamat}</textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-1.5 rounded-lg text-[11px]">
+                            Simpan Perubahan
+                        </button>
+                    </form>
+                ` : ''}
+
+                <div class="pt-2">
+                    <p class="font-bold text-slate-700 text-[11px] mb-1.5">${isAdmin ? 'Antrean Jemputan (Admin View)' : 'Riwayat Penjemputan Saya'}:</p>
+                    <div id="daftarTransaksiModal" class="space-y-1.5 max-h-40 overflow-y-auto"></div>
+                </div>
+
+                <button onclick="logout()" class="w-full bg-red-50 hover:bg-red-100 text-red-600 font-bold py-2 rounded-xl text-xs flex items-center justify-center space-x-1 mt-2">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Keluar dari Akun</span>
+                </button>
+            `;
         }
 
-        // SLIDER LOGIC
-        let currentSlide = 0;
-        setInterval(() => {
-            currentSlide = (currentSlide + 1) % 3;
-            document.getElementById('sliderWrapper').style.transform = `translateX(-${currentSlide * 100}%)`;
-            for (let i = 0; i < 3; i++) {
-                document.getElementById(`dot${i}`).className = i === currentSlide ? "w-1.5 h-1.5 rounded-full bg-white transition-all" : "w-1.5 h-1.5 rounded-full bg-white/50 transition-all";
+        // -------------------------------------------------------------
+        // 4. TRANSAKSI JUAL SAMPAH & FIRESTORE REALTIME
+        // -------------------------------------------------------------
+        function bukaFormJual() {
+            if (!currentUser) {
+                Swal.fire('Login Diperlukan', 'Silakan login terlebih dahulu untuk menjual sampah.', 'info');
+                bukaModal('modalProfil');
+                return;
             }
-        }, 4000);
+            bukaModal('modalJual');
+        }
 
-        // MODAL CONTROLLER
-        function bukaModal(id) { document.getElementById(id).classList.remove('hidden'); }
-        function tutupModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-        // LOGIC JUAL BARANG
         function hitungTotalJual() {
             const kategori = document.getElementById('jualKategori').value;
             const berat = parseFloat(document.getElementById('jualBerat').value) || 0;
-            
             if (kategori && HARGA[kategori]) {
-                const total = HARGA[kategori] * berat;
-                document.getElementById('jualTotal').innerText = formatRp(total);
+                document.getElementById('jualTotal').innerText = formatRp(HARGA[kategori] * berat);
             } else {
                 document.getElementById('jualTotal').innerText = 'Rp 0';
             }
@@ -622,223 +600,257 @@
                         const lng = pos.coords.longitude.toFixed(5);
                         document.getElementById('jualGps').value = `${lat}, ${lng}`;
                         btnText.innerText = `Lokasi Terdeteksi (${lat}, ${lng})`;
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Lokasi Ditemukan!',
-                            text: `Koordinat GPS: ${lat}, ${lng}`,
-                            timer: 1500,
-                            showConfirmButton: false
-                        });
+                        Swal.fire({ icon: 'success', title: 'Lokasi Terdeteksi!', timer: 1200, showConfirmButton: false });
                     },
-                    (err) => {
-                        btnText.innerText = "Aktifkan Lokasi Share (GPS)";
-                        Swal.fire('Gagal Akses GPS', 'Pastikan GPS dan izin lokasi aktif.', 'error');
-                    }
+                    () => Swal.fire('Gagal GPS', 'Pastikan GPS dan izin lokasi aktif.', 'error')
                 );
-            } else {
-                Swal.fire('Tidak Didukung', 'Browser tidak mendukung GPS.', 'warning');
             }
         }
 
-        function handleJualSampah(e) {
+        async function handleJualSampah(e) {
             e.preventDefault();
+            if (!currentUser) return;
+
             const kategori = document.getElementById('jualKategori').value;
             const kg = parseFloat(document.getElementById('jualBerat').value);
             const total = HARGA[kategori] * kg;
             const gps = document.getElementById('jualGps').value;
 
-            if (kg < 1) {
-                Swal.fire('Jumlah Tidak Valid', 'Masukkan berat sampah yang valid.', 'warning');
+            try {
+                await db.collection('orders').add({
+                    uid: currentUser.uid,
+                    nama: currentUserData.nama,
+                    alamat: currentUserData.alamat,
+                    kategori: kategori,
+                    kg: kg,
+                    total: total,
+                    gps: gps,
+                    status: 'Dalam Penjemputan',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                tutupModal('modalJual');
+                document.getElementById('jualBerat').value = '';
+                document.getElementById('jualTotal').innerText = 'Rp 0';
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pesanan Terkirim!',
+                    html: `Pesanan <b>${kg} kg ${kategori}</b> berhasil dikirim.<br>Kurir kami akan segera menuju lokasi.`,
+                    confirmButtonColor: '#059669'
+                });
+            } catch (err) {
+                Swal.fire('Gagal Kirim', err.message, 'error');
+            }
+        }
+
+        // Live Listener Transaksi
+        function listenUserOrders() {
+            const modalList = document.getElementById('daftarTransaksiModal');
+            let query = db.collection('orders').orderBy('createdAt', 'desc').limit(10);
+
+            // Jika role user biasa, filter berdasarkan UID user saja
+            if (currentUserData.role !== 'admin') {
+                query = db.collection('orders').where('uid', '==', currentUser.uid).orderBy('createdAt', 'desc');
+            }
+
+            query.onSnapshot(snapshot => {
+                if (!modalList) return;
+                if (snapshot.empty) {
+                    modalList.innerHTML = `<p class="text-center text-slate-400 py-2 text-[10px]">Belum ada data transaksi.</p>`;
+                    return;
+                }
+
+                modalList.innerHTML = snapshot.docs.map(doc => {
+                    const data = doc.data();
+                    const isPending = data.status === 'Dalam Penjemputan';
+
+                    return `
+                        <div class="bg-slate-50 p-2 rounded-lg border border-slate-200 text-xs space-y-1">
+                            <div class="flex justify-between font-bold">
+                                <span>${data.kategori} (${data.kg} kg)</span>
+                                <span class="text-emerald-600">${formatRp(data.total)}</span>
+                            </div>
+                            <div class="flex justify-between items-center text-[10px] text-slate-500">
+                                <span>${data.nama} - ${data.alamat}</span>
+                                <span class="font-bold px-1.5 py-0.5 rounded-full ${isPending ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">${data.status}</span>
+                            </div>
+                            ${(currentUserData.role === 'admin' && isPending) ? `
+                                <button onclick="accPenjemputanAdmin('${doc.id}', '${data.uid}', ${data.total})" class="w-full bg-emerald-600 text-white font-bold py-1 rounded text-[10px] mt-1">
+                                    Acc & Cairkan Saldo User
+                                </button>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('');
+            });
+        }
+
+        // ACC & Cairkan Saldo oleh Admin
+        async function accPenjemputanAdmin(orderId, targetUid, totalRp) {
+            try {
+                // Update status order
+                await db.collection('orders').doc(orderId).update({ status: 'Selesai' });
+
+                // Tambahkan saldo ke akun user penerima
+                const targetUserRef = db.collection('users').doc(targetUid);
+                await db.runTransaction(async (transaction) => {
+                    const doc = await transaction.get(targetUserRef);
+                    if (doc.exists) {
+                        const newSaldo = (doc.data().saldo || 0) + totalRp;
+                        transaction.update(targetUserRef, { saldo: newSaldo });
+                    }
+                });
+
+                Swal.fire({ icon: 'success', title: 'Berhasil!', text: 'Penjemputan selesai & saldo telah ditambahkan ke user.', timer: 1500, showConfirmButton: false });
+            } catch (err) {
+                Swal.fire('Gagal Proses', err.message, 'error');
+            }
+        }
+
+        // -------------------------------------------------------------
+        // 5. LIVE FEED UNTUK HALAMAN DEPAN
+        // -------------------------------------------------------------
+        db.collection('orders').orderBy('createdAt', 'desc').limit(3).onSnapshot(snapshot => {
+            const container = document.getElementById('liveFeedContainer');
+            if (snapshot.empty) {
+                container.innerHTML = `<p class="text-center text-slate-400 text-xs py-2">Belum ada penjemputan.</p>`;
                 return;
             }
 
-            const transaksiBaru = {
-                id: 'TX-' + Date.now(),
-                nama: appData.user.nama,
-                alamat: appData.user.alamat,
-                kategori: kategori,
-                kg: kg,
-                total: total,
-                gps: gps,
-                status: 'Dalam Penjemputan'
-            };
+            container.innerHTML = snapshot.docs.map(doc => {
+                const data = doc.data();
+                return `
+                    <div class="bg-slate-50 border border-slate-200/70 p-2 rounded-xl flex justify-between items-center text-xs">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-extrabold">
+                                <i class="fa-solid fa-truck"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-slate-800 text-[11px]">${data.nama}</p>
+                                <p class="text-[10px] text-slate-500">${data.kg}kg ${data.kategori}</p>
+                            </div>
+                        </div>
+                        <span class="text-[9px] font-bold px-2 py-0.5 rounded-full ${data.status === 'Selesai' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                            ${data.status}
+                        </span>
+                    </div>
+                `;
+            }).join('');
+        });
 
-            appData.transaksi.unshift(transaksiBaru);
-            simpan();
+        // -------------------------------------------------------------
+        // 6. GALERI FIRESTORE
+        // -------------------------------------------------------------
+        async function uploadFotoGaleri() {
+            if (!currentUserData || currentUserData.role !== 'admin') {
+                Swal.fire('Akses Ditolak', 'Hanya Admin yang dapat mengunggah foto.', 'warning');
+                return;
+            }
 
-            // Reset form
-            document.getElementById('jualBerat').value = '';
-            document.getElementById('jualKategori').selectedIndex = 0;
-            document.getElementById('jualTotal').innerText = 'Rp 0';
-            document.getElementById('btnTextGps').innerText = 'Aktifkan Lokasi Share (GPS)';
-
-            tutupModal('modalJual');
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Request Berhasil!',
-                html: `Penjemputan <b>${kg} kg ${kategori}</b> berhasil dikirim.<br>Estimasi pendapatan: <b>${formatRp(total)}</b>.`,
-                confirmButtonColor: '#059669'
-            });
-        }
-
-        // GALERI LOGIC
-        function uploadFoto() {
             const input = document.getElementById('inputFoto');
             if (input.files && input.files[0]) {
+                const file = input.files[0];
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    appData.galeri.unshift(e.target.result);
-                    simpan();
-                    input.value = '';
-                    Swal.fire({ icon: 'success', title: 'Foto Terupload!', timer: 1200, showConfirmButton: false });
+
+                reader.onload = async function(e) {
+                    try {
+                        await db.collection('gallery').add({
+                            imageUrl: e.target.result,
+                            uploadedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        input.value = '';
+                        Swal.fire({ icon: 'success', title: 'Foto Terupload!', timer: 1200, showConfirmButton: false });
+                    } catch (err) {
+                        Swal.fire('Gagal Upload', err.message, 'error');
+                    }
                 };
-                reader.readAsDataURL(input.files[0]);
+                reader.readAsDataURL(file);
             }
         }
 
-        function hapusFoto(index) {
-            Swal.fire({
-                title: 'Hapus Foto?',
-                text: 'Foto ini akan dihapus dari galeri.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#ef4444',
-                confirmButtonText: 'Hapus'
-            }).then((res) => {
-                if (res.isConfirmed) {
-                    appData.galeri.splice(index, 1);
-                    simpan();
-                }
-            });
-        }
-
-        function renderGaleri() {
+        db.collection('gallery').orderBy('uploadedAt', 'desc').onSnapshot(snapshot => {
             const container = document.getElementById('containerGaleri');
-            if (appData.galeri.length === 0) {
+            if (snapshot.empty) {
                 container.innerHTML = `<p class="col-span-2 text-center text-slate-400 py-3 text-[11px]">Belum ada foto kegiatan.</p>`;
                 return;
             }
-            container.innerHTML = appData.galeri.map((img, i) => `
-                <div class="relative group rounded-lg overflow-hidden aspect-square border border-slate-200">
-                    <img src="${img}" class="w-full h-full object-cover">
-                    <button onclick="hapusFoto(${i})" class="absolute top-1 right-1 bg-red-600 text-white w-5 h-5 rounded-full text-[9px] flex items-center justify-center shadow hover:bg-red-700">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
-                </div>
-            `).join('');
-        }
 
-        // PROFIL & ADMIN STATUS
-        function switchTabProfil(tab) {
-            const secStatus = document.getElementById('secStatus');
-            const secAdmin = document.getElementById('secAdmin');
-            const btnStatus = document.getElementById('btnTabStatus');
-            const btnAdmin = document.getElementById('btnTabAdmin');
-
-            if (tab === 'status') {
-                secStatus.classList.remove('hidden');
-                secAdmin.classList.add('hidden');
-                btnStatus.className = "flex-1 py-1.5 font-bold text-emerald-600 border-b-2 border-emerald-600 text-[11px]";
-                btnAdmin.className = "flex-1 py-1.5 font-semibold text-slate-400 text-[11px]";
-            } else {
-                secAdmin.classList.remove('hidden');
-                secStatus.classList.add('hidden');
-                btnAdmin.className = "flex-1 py-1.5 font-bold text-emerald-600 border-b-2 border-emerald-600 text-[11px]";
-                btnStatus.className = "flex-1 py-1.5 font-semibold text-slate-400 text-[11px]";
-            }
-        }
-
-        function renderStatusUser() {
-            const container = document.getElementById('daftarStatusUser');
-            if (appData.transaksi.length === 0) {
-                container.innerHTML = `<p class="text-center text-slate-400 py-3 text-[11px]">Belum ada transaksi.</p>`;
-                return;
-            }
-            container.innerHTML = appData.transaksi.map(t => `
-                <div class="bg-slate-50 p-2 rounded-lg border border-slate-200 space-y-1">
-                    <div class="flex justify-between items-center">
-                        <span class="font-bold text-slate-800 text-[11px]">${t.kategori} (${t.kg} kg)</span>
-                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full ${t.status === 'Selesai' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${t.status}</span>
+            container.innerHTML = snapshot.docs.map(doc => {
+                const data = doc.data();
+                return `
+                    <div class="relative group rounded-lg overflow-hidden aspect-square border border-slate-200">
+                        <img src="${data.imageUrl}" class="w-full h-full object-cover">
+                        ${(currentUserData && currentUserData.role === 'admin') ? `
+                            <button onclick="hapusFotoGaleri('${doc.id}')" class="absolute top-1 right-1 bg-red-600 text-white w-5 h-5 rounded-full text-[9px] flex items-center justify-center shadow">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        ` : ''}
                     </div>
-                    <div class="flex justify-between text-[10px] text-slate-500">
-                        <span>Alamat: ${t.alamat}</span>
-                        <span class="font-bold text-emerald-600">${formatRp(t.total)}</span>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
+        });
+
+        async function hapusFotoGaleri(id) {
+            await db.collection('gallery').doc(id).delete();
+            Swal.fire({ icon: 'success', title: 'Foto Dihapus', timer: 1000, showConfirmButton: false });
         }
 
-        function renderStatusAdmin() {
-            const container = document.getElementById('daftarStatusAdmin');
-            const pending = appData.transaksi.filter(t => t.status !== 'Selesai');
-            if (pending.length === 0) {
-                container.innerHTML = `<p class="text-center text-slate-400 py-3 text-[11px]">Tidak ada antrean jemput.</p>`;
-                return;
-            }
-            container.innerHTML = pending.map(t => `
-                <div class="bg-slate-50 p-2 rounded-lg border border-slate-200 space-y-1">
-                    <div class="flex justify-between">
-                        <span class="font-bold text-slate-800 text-[11px]">${t.nama} - ${t.kg} kg (${t.kategori})</span>
-                        <span class="font-extrabold text-emerald-600 text-[11px]">${formatRp(t.total)}</span>
-                    </div>
-                    <p class="text-[9px] text-slate-500">Alamat: ${t.alamat} (GPS: ${t.gps})</p>
-                    <button onclick="selesaikanJemput('${t.id}')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1 rounded-md text-[10px]">
-                        Tiba & Cairkan Saldo User
-                    </button>
-                </div>
-            `).join('');
-        }
-
-        function selesaikanJemput(id) {
-            const idx = appData.transaksi.findIndex(t => t.id === id);
-            if (idx !== -1) {
-                appData.transaksi[idx].status = 'Selesai';
-                appData.saldo += appData.transaksi[idx].total;
-                simpan();
-                Swal.fire('Selesai!', 'Saldo berhasil dicairkan ke profil user.', 'success');
-            }
-        }
-
-        // TARIK UANG LOGIC
+        // -------------------------------------------------------------
+        // 7. PENARIKAN SALDO USER
+        // -------------------------------------------------------------
         function bukaModalTarik() {
-            document.getElementById('modalTarikUang').classList.remove('hidden');
+            tutupModal('modalProfil');
+            bukaModal('modalTarikUang');
         }
 
-        function updateLabelTarget() {
-            const m = document.getElementById('tarikMetode').value;
-            document.getElementById('labelTarget').innerText = (m === 'DANA' || m === 'OVO') ? 'Nomor HP E-Wallet' : 'Nomor Rekening';
-        }
-
-        function handleTarikPencairan(e) {
+        async function handleTarikPencairan(e) {
             e.preventDefault();
-            const nom = parseFloat(document.getElementById('tarikNominal').value);
-            const met = document.getElementById('tarikMetode').value;
+            if (!currentUser) return;
+
+            const nominal = parseFloat(document.getElementById('tarikNominal').value);
+            const metode = document.getElementById('tarikMetode').value;
             const target = document.getElementById('tarikTarget').value;
 
-            if (nom < 50000) {
-                Swal.fire('Batas Penarikan', 'Minimal penarikan saldo adalah Rp 50.000', 'warning');
-                return;
-            }
-            if (nom > appData.saldo) {
-                Swal.fire('Saldo Kurang', `Saldo kamu saat ini ${formatRp(appData.saldo)}`, 'error');
+            if (nominal > (currentUserData.saldo || 0)) {
+                Swal.fire('Saldo Kurang', 'Saldo Anda tidak mencukupi untuk penarikan ini.', 'warning');
                 return;
             }
 
-            appData.saldo -= nom;
-            simpan();
-            tutupModal('modalTarikUang');
+            try {
+                // Potong saldo di Firestore
+                const userRef = db.collection('users').doc(currentUser.uid);
+                await userRef.update({
+                    saldo: firebase.firestore.FieldValue.increment(-nominal)
+                });
 
-            Swal.fire({
-                icon: 'success',
-                title: 'Penarikan Diproses!',
-                html: `Penarikan <b>${formatRp(nom)}</b> via <b>${met} (${target})</b> sedang dikirim.`,
-                confirmButtonColor: '#059669'
-            });
+                tutupModal('modalTarikUang');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Penarikan Diproses!',
+                    html: `Penarikan <b>${formatRp(nominal)}</b> via <b>${metode} (${target})</b> berhasil diajukan.`,
+                    confirmButtonColor: '#059669'
+                });
+            } catch (err) {
+                Swal.fire('Gagal', err.message, 'error');
+            }
         }
 
-        // Initial Load
-        updateStateUI();
+        // UTILS & SLIDER
+        function formatRp(num) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+        }
+        function bukaModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function tutupModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        let currentSlide = 0;
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % 3;
+            document.getElementById('sliderWrapper').style.transform = `translateX(-${currentSlide * 100}%)`;
+            for (let i = 0; i < 3; i++) {
+                document.getElementById(`dot${i}`).className = i === currentSlide ? "w-1.5 h-1.5 rounded-full bg-white transition-all" : "w-1.5 h-1.5 rounded-full bg-white/50 transition-all";
+            }
+        }, 4000);
     </script>
 </body>
 </html>
