@@ -1,186 +1,783 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tata Letak Premium - Amber & Zinc</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DUITIN - Sampah Jadi Duit & Sembako</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        @keyframes modalCenterPop {
+            0% { opacity: 0; transform: scale(0.85) translateY(-10px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .animate-modal-center {
+            animation: modalCenterPop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .marquee-text {
+            display: inline-block;
+            animation: marquee 18s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+    </style>
 </head>
-<body class="bg-zinc-950 text-zinc-100 min-h-screen pb-20">
+<body class="min-h-screen flex flex-col justify-between text-slate-800">
 
-  <!-- Header & Menu Utama -->
-  <header class="sticky top-0 z-50 bg-zinc-900/90 backdrop-blur-md border-b border-zinc-800 px-4 py-3 flex items-center justify-between shadow-lg">
-    <div class="flex items-center gap-2">
-      <div class="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center font-black text-zinc-950 text-base">
-        B
-      </div>
-      <span class="font-bold text-base tracking-wider text-white">BRANDNAME</span>
-    </div>
-    <button class="bg-amber-500 hover:bg-amber-400 text-zinc-950 font-extrabold py-2 px-5 rounded-full shadow-lg shadow-amber-500/20 active:scale-95 transition text-xs tracking-wider">
-      JUAL SEKARANG
-    </button>
-  </header>
-
-  <main class="max-w-md mx-auto p-4 space-y-6">
-
-    <!-- KOMPONEN BARU 1: Banner Promo / Pengumuman -->
-    <section class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-amber-500/20 via-zinc-900 to-zinc-900 border border-amber-500/30 p-4">
-      <div class="flex items-center justify-between relative z-10">
-        <div>
-          <span class="bg-amber-500 text-zinc-950 font-extrabold text-[10px] px-2 py-0,5 rounded uppercase tracking-wider">Promo Spesial</span>
-          <h3 class="text-sm font-bold text-white mt-1">Diskon Potongan Sablon 20%</h3>
-          <p class="text-xs text-zinc-400 mt-0,5">Berlaku sampai akhir minggu ini.</p>
-        </div>
-        <i class="fa-solid fa-fire text-3xl text-amber-500/80"></i>
-      </div>
-    </section>
-
-    <!-- KOMPONEN BARU 2: Pencarian & Filter Kategori -->
-    <section class="space-y-3">
-      <!-- Search Bar -->
-      <div class="relative">
-        <i class="fa-solid fa-magnifying-glass absolute left-3,5 top-1/2 -translate-y-1/2 text-zinc-400 text-xs"></i>
-        <input type="text" placeholder="Cari produk atau layanan..." class="w-full bg-zinc-900 border border-zinc-800 rounded-xl pl-9 pr-4 py-2,5 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-amber-500 transition">
-      </div>
-
-      <!-- Kategori Filter (Pills) -->
-      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
-        <button class="bg-amber-500 text-zinc-950 font-bold text-xs px-3 py-1,5 rounded-lg whitespace-nowrap">Semua</button>
-        <button class="bg-zinc-900 hover:bg-zinc-800 text-zinc-400 font-medium text-xs px-3 py-1,5 rounded-lg border border-zinc-800 whitespace-nowrap">Kaos</button>
-        <button class="bg-zinc-900 hover:bg-zinc-800 text-zinc-400 font-medium text-xs px-3 py-1,5 rounded-lg border border-zinc-800 whitespace-nowrap">Hoodie</button>
-        <button class="bg-zinc-900 hover:bg-zinc-800 text-zinc-400 font-medium text-xs px-3 py-1,5 rounded-lg border border-zinc-800 whitespace-nowrap">Aksesoris</button>
-      </div>
-    </section>
-
-    <!-- Grid 1: Produk, Harga, dan Teks (Tanpa Tombol Jual) -->
-    <section>
-      <div class="flex items-center justify-between mb-3">
-        <h2 class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Katalog Produk</h2>
-        <a href="#" class="text-xs text-amber-500 font-medium hover:underline">Lihat Semua</a>
-      </div>
-      <div class="grid grid-cols-2 gap-3">
+    <!-- MAIN APP WRAPPER (Mobile-First) -->
+    <div class="max-w-md mx-auto w-full min-h-screen bg-white shadow-xl flex flex-col relative pb-6">
         
-        <!-- Card Produk 1 -->
-        <div class="bg-zinc-900 border border-zinc-800/80 rounded-2xl overflow-hidden flex flex-col hover:border-amber-500/50 transition">
-          <div class="relative">
-            <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=400&q=80" alt="Produk 1" class="w-full h-36 object-cover">
-            <span class="absolute top-2 right-2 bg-zinc-950/80 backdrop-blur text-amber-400 text-[10px] font-bold px-2 py-0,5 rounded-full border border-amber-500/30">
-              <i class="fa-solid fa-star text-[9px] mr-0,5"></i> 4.9
-            </span>
-          </div>
-          <div class="p-3 flex flex-col flex-grow justify-between space-y-2">
-            <div>
-              <h3 class="font-bold text-white text-sm line-clamp-1">Kaos Custom Dark</h3>
-              <p class="text-amber-400 font-black text-sm mt-0,5">Rp 120.000</p>
-              <p class="text-zinc-400 text-xs mt-1,5 leading-relaxed line-clamp-2">
-                Bahan katun kombed 30s premium dengan sablon manual plastisol.
-              </p>
+        <!-- 1. HEADER -->
+        <header class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-3.5 sticky top-0 z-30 shadow-md flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="bg-white/20 p-1.5 rounded-lg backdrop-blur-md">
+                    <i class="fa-solid fa-recycle text-lg text-yellow-300"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-extrabold tracking-wider leading-none">DUITIN</h1>
+                    <p class="text-[9px] text-emerald-100 font-medium mt-0.5">Sampah Jadi Duit & Sembako</p>
+                </div>
             </div>
-          </div>
-        </div>
-
-        <!-- Card Produk 2 -->
-        <div class="bg-zinc-900 border border-zinc-800/80 rounded-2xl overflow-hidden flex flex-col hover:border-amber-500/50 transition">
-          <div class="relative">
-            <img src="https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=400&q=80" alt="Produk 2" class="w-full h-36 object-cover">
-            <span class="absolute top-2 right-2 bg-zinc-950/80 backdrop-blur text-amber-400 text-[10px] font-bold px-2 py-0,5 rounded-full border border-amber-500/30">
-              <i class="fa-solid fa-star text-[9px] mr-0,5"></i> 5.0
-            </span>
-          </div>
-          <div class="p-3 flex flex-col flex-grow justify-between space-y-2">
-            <div>
-              <h3 class="font-bold text-white text-sm line-clamp-1">Hoodie Heavyweight</h3>
-              <p class="text-amber-400 font-black text-sm mt-0,5">Rp 250.000</p>
-              <p class="text-zinc-400 text-xs mt-1,5 leading-relaxed line-clamp-2">
-                Potongan oversized nyaman dipakai seharian dengan material tebal.
-              </p>
+            <!-- Quick Saldo Badge -->
+            <div onclick="bukaModal('modalProfil')" class="bg-emerald-800/60 hover:bg-emerald-800 border border-emerald-400/30 px-3 py-1 rounded-full flex items-center space-x-1.5 cursor-pointer transition active:scale-95">
+                <i class="fa-solid fa-wallet text-yellow-300 text-xs"></i>
+                <span id="headerSaldo" class="text-xs font-bold">Rp 0</span>
             </div>
-          </div>
-        </div>
+        </header>
 
-      </div>
-    </section>
+        <!-- CONTENT AREA -->
+        <main class="p-3.5 space-y-4 flex-1">
 
-    <!-- Grid Ikon Navigasi (INFO, GALLERY, FACT, PROFIL) -->
-    <section>
-      <h2 class="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-3">Menu Utama</h2>
-      <div class="grid grid-cols-4 gap-2,5">
-        
-        <!-- INFO -->
-        <a href="#info" class="bg-zinc-900 border border-zinc-800/80 hover:border-amber-500/60 rounded-2xl p-3 flex flex-col items-center justify-center gap-2 transition group">
-          <div class="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center text-amber-400 group-hover:bg-amber-500 group-hover:text-zinc-950 transition">
-            <i class="fa-solid fa-circle-info text-base"></i>
-          </div>
-          <span class="text-[10px] font-bold text-zinc-300 tracking-wider">INFO</span>
-        </a>
+            <!-- 2. IMAGE SLIDER -->
+            <div class="relative w-full rounded-2xl overflow-hidden shadow-sm aspect-[21/9] bg-slate-100">
+                <div id="sliderWrapper" class="flex transition-transform duration-500 ease-out h-full w-full">
+                    <div class="min-w-full h-full relative">
+                        <img src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover" alt="Slide 1">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-2.5">
+                            <p class="text-white text-[11px] font-semibold">Tukarkan sampah plastik & besi secara mudah!</p>
+                        </div>
+                    </div>
+                    <div class="min-w-full h-full relative">
+                        <img src="https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover" alt="Slide 2">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-2.5">
+                            <p class="text-white text-[11px] font-semibold">Jemput langsung ke lokasi rumah kamu!</p>
+                        </div>
+                    </div>
+                    <div class="min-w-full h-full relative">
+                        <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover" alt="Slide 3">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-2.5">
+                            <p class="text-white text-[11px] font-semibold">Cairkan saldo instan ke DANA, OVO & Bank!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="absolute bottom-2 right-2.5 flex space-x-1 z-10">
+                    <div id="dot0" class="w-1.5 h-1.5 rounded-full bg-white transition-all"></div>
+                    <div id="dot1" class="w-1.5 h-1.5 rounded-full bg-white/50 transition-all"></div>
+                    <div id="dot2" class="w-1.5 h-1.5 rounded-full bg-white/50 transition-all"></div>
+                </div>
+            </div>
 
-        <!-- GALLERY -->
-        <a href="#gallery" class="bg-zinc-900 border border-zinc-800/80 hover:border-amber-500/60 rounded-2xl p-3 flex flex-col items-center justify-center gap-2 transition group">
-          <div class="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center text-amber-400 group-hover:bg-amber-500 group-hover:text-zinc-950 transition">
-            <i class="fa-solid fa-images text-base"></i>
-          </div>
-          <span class="text-[10px] font-bold text-zinc-300 tracking-wider">GALLERY</span>
-        </a>
+            <!-- 3. RUNNING TEXT -->
+            <div class="bg-amber-50 border border-amber-200/80 rounded-xl px-2.5 py-1.5 flex items-center space-x-2 text-[11px] text-amber-900 shadow-sm">
+                <span class="bg-amber-500 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded tracking-wider flex items-center space-x-1 shrink-0">
+                    <i class="fa-solid fa-bullhorn text-[8px]"></i>
+                    <span>INFO TERUPDATE</span>
+                </span>
+                <div class="marquee-container w-full">
+                    <div class="marquee-text font-medium">
+                        ♻️ Harga Tembaga hari ini Rp 70.000/kg! • Minimal penarikan saldo Rp 50.000 via DANA/OVO/Bank • Penjemputan gratis area Bandung.
+                    </div>
+                </div>
+            </div>
 
-        <!-- FACT -->
-        <a href="#fact" class="bg-zinc-900 border border-zinc-800/80 hover:border-amber-500/60 rounded-2xl p-3 flex flex-col items-center justify-center gap-2 transition group">
-          <div class="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center text-amber-400 group-hover:bg-amber-500 group-hover:text-zinc-950 transition">
-            <i class="fa-solid fa-lightbulb text-base"></i>
-          </div>
-          <span class="text-[10px] font-bold text-zinc-300 tracking-wider">FACT</span>
-        </a>
+            <!-- 4. MENU UTAMA (Grid Ikon + Label) -->
+            <div>
+                <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 text-center">Menu Utama</h2>
+                <div class="grid grid-cols-4 gap-2.5 px-1">
+                    <button onclick="bukaModal('modalProduk')" class="flex flex-col items-center justify-center p-2.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/60 rounded-2xl shadow-sm hover:shadow active:scale-90 transition-all">
+                        <i class="fa-solid fa-tags text-xl text-emerald-600"></i>
+                        <span class="text-[10px] font-extrabold text-emerald-800 mt-1 tracking-tight">INFO</span>
+                    </button>
+                    <button onclick="bukaModal('modalGaleri')" class="flex flex-col items-center justify-center p-2.5 bg-blue-50 hover:bg-blue-100 border border-blue-200/60 rounded-2xl shadow-sm hover:shadow active:scale-90 transition-all">
+                        <i class="fa-solid fa-camera text-xl text-blue-600"></i>
+                        <span class="text-[10px] font-extrabold text-blue-800 mt-1 tracking-tight">GALLERY</span>
+                    </button>
+                    <button onclick="bukaModal('modalFact')" class="flex flex-col items-center justify-center p-2.5 bg-purple-50 hover:bg-purple-100 border border-purple-200/60 rounded-2xl shadow-sm hover:shadow active:scale-90 transition-all">
+                        <i class="fa-solid fa-lightbulb text-xl text-purple-600"></i>
+                        <span class="text-[10px] font-extrabold text-purple-800 mt-1 tracking-tight">FACT</span>
+                    </button>
+                    <button onclick="bukaModal('modalProfil')" class="flex flex-col items-center justify-center p-2.5 bg-amber-50 hover:bg-amber-100 border border-amber-200/60 rounded-2xl shadow-sm hover:shadow active:scale-90 transition-all">
+                        <i class="fa-solid fa-user-gear text-xl text-amber-600"></i>
+                        <span class="text-[10px] font-extrabold text-amber-800 mt-1 tracking-tight">PROFIL</span>
+                    </button>
+                </div>
+            </div>
 
-        <!-- PROFIL -->
-        <a href="#profil" class="bg-zinc-900 border border-zinc-800/80 hover:border-amber-500/60 rounded-2xl p-3 flex flex-col items-center justify-center gap-2 transition group">
-          <div class="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center text-amber-400 group-hover:bg-amber-500 group-hover:text-zinc-950 transition">
-            <i class="fa-solid fa-user text-base"></i>
-          </div>
-          <span class="text-[10px] font-bold text-zinc-300 tracking-wider">PROFIL</span>
-        </a>
+            <!-- FITUR 1: BANNER UTAMA JEMPUT SAMPAH (Call-to-Action) -->
+            <div onclick="bukaModal('modalProduk')" class="bg-gradient-to-br from-emerald-600 via-teal-600 to-emerald-800 rounded-2xl p-4 text-white shadow-lg relative overflow-hidden cursor-pointer active:scale-98 transition group">
+                <div class="absolute -right-4 -bottom-4 opacity-20 group-hover:scale-110 transition-transform">
+                    <i class="fa-solid fa-truck-fast text-8xl"></i>
+                </div>
+                <div class="relative z-10 flex justify-between items-center">
+                    <div class="space-y-1 max-w-[70%]">
+                        <span class="bg-yellow-400 text-slate-900 text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Layanan Utama</span>
+                        <h3 class="font-black text-base leading-tight">Jemput Sampah Sekarang</h3>
+                        <p class="text-[10px] text-emerald-100">Kurir siap ke rumahmu & timbang di tempat.</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-white text-emerald-700 flex items-center justify-center font-bold text-base shadow group-hover:bg-yellow-300 transition-colors">
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </div>
+            </div>
 
-      </div>
-    </section>
+            <!-- FITUR 2: STATISTIK DAMPAK LINGKUNGAN (Eco-Impact Counter) -->
+            <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-3.5 shadow-sm space-y-2">
+                <div class="flex justify-between items-center border-b border-slate-200/60 pb-2">
+                    <div class="flex items-center space-x-1.5">
+                        <i class="fa-solid fa-seedling text-emerald-600 text-xs"></i>
+                        <h3 class="font-bold text-slate-800 text-xs">Dampak Hijau Kamu</h3>
+                    </div>
+                    <span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Level: Pahlawan Bumi</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-center pt-1">
+                    <div class="bg-white p-2 rounded-xl border border-slate-100 shadow-2xs">
+                        <p id="totalKgUser" class="font-black text-base text-emerald-600">0 Kg</p>
+                        <p class="text-[9px] text-slate-400 font-medium">Sampah Didaur Ulang</p>
+                    </div>
+                    <div class="bg-white p-2 rounded-xl border border-slate-100 shadow-2xs">
+                        <p id="totalPohonUser" class="font-black text-base text-teal-600">0 Pohon</p>
+                        <p class="text-[9px] text-slate-400 font-medium">Estimasi Diselamatkan</p>
+                    </div>
+                </div>
+            </div>
 
-    <!-- KOMPONEN BARU 3: Statistik/Keunggulan Ringkas -->
-    <section class="grid grid-cols-3 gap-2 bg-zinc-900/50 border border-zinc-800 rounded-2xl p-3 text-center">
-      <div>
-        <p class="text-amber-400 font-extrabold text-sm">100%</p>
-        <p class="text-[10px] text-zinc-400 mt-0,5">Original</p>
-      </div>
-      <div class="border-x border-zinc-800">
-        <p class="text-amber-400 font-extrabold text-sm">24/7</p>
-        <p class="text-[10px] text-zinc-400 mt-0,5">Respon Cepat</p>
-      </div>
-      <div>
-        <p class="text-amber-400 font-extrabold text-sm">5★</p>
-        <p class="text-[10px] text-zinc-400 mt-0,5">Rating Toko</p>
-      </div>
-    </section>
+            <!-- FITUR 3: FEED AKTIVITAS TERKINI (Live Social Proof) -->
+            <div class="space-y-2">
+                <div class="flex justify-between items-center px-1">
+                    <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Aktivitas Penjemputan</h3>
+                    <span class="text-[9px] font-semibold text-emerald-600 flex items-center">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping mr-1"></span> Real-Time
+                    </span>
+                </div>
+                <div id="liveFeedContainer" class="space-y-1.5">
+                    <!-- Feed di-render dinamis via JS -->
+                </div>
+            </div>
 
-  </main>
+        </main>
 
-  <!-- KOMPONEN BARU 4: Bottom Navigation Bar -->
-  <nav class="fixed bottom-0 left-0 right-0 z-50 bg-zinc-900/95 backdrop-blur-md border-t border-zinc-800 px-6 py-2">
-    <div class="max-w-md mx-auto flex items-center justify-around">
-      <a href="#" class="flex flex-col items-center text-amber-500 gap-1">
-        <i class="fa-solid fa-house text-base"></i>
-        <span class="text-[9px] font-bold">Beranda</span>
-      </a>
-      <a href="#" class="flex flex-col items-center text-zinc-500 hover:text-zinc-300 gap-1">
-        <i class="fa-solid fa-store text-base"></i>
-        <span class="text-[9px] font-medium">Katalog</span>
-      </a>
-      <a href="#" class="flex flex-col items-center text-zinc-500 hover:text-zinc-300 gap-1">
-        <i class="fa-solid fa-bell text-base"></i>
-        <span class="text-[9px] font-medium">Notifikasi</span>
-      </a>
-      <a href="#" class="flex flex-col items-center text-zinc-500 hover:text-zinc-300 gap-1">
-        <i class="fa-solid fa-gear text-base"></i>
-        <span class="text-[9px] font-medium">Pengaturan</span>
-      </a>
+        <!-- 5. WATERMARK FOOTER -->
+        <footer class="mt-2 px-3.5">
+            <div class="bg-slate-100 border border-slate-200/80 rounded-xl p-3 text-center shadow-inner">
+                <p class="text-[10px] font-bold text-slate-600 flex items-center justify-center space-x-1">
+                    <i class="fa-solid fa-leaf text-emerald-600"></i>
+                    <span>DUITIN App v2.0 • Clean & Green</span>
+                </p>
+                <p class="text-[9px] text-slate-400 mt-0.5">© 2026 DUITIN Platform. Hak Cipta Dilindungi.</p>
+            </div>
+        </footer>
+
     </div>
-  </nav>
 
+    <!-- POPUP PROMO & WELCOME -->
+    <div id="modalPromo" class="fixed inset-0 bg-black/70 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-xs rounded-3xl overflow-hidden shadow-2xl animate-modal-center text-center">
+            <div class="bg-gradient-to-br from-emerald-500 to-teal-700 p-6 text-white relative">
+                <button onclick="tutupModal('modalPromo')" class="absolute top-3 right-3 text-white/80 hover:text-white bg-black/20 rounded-full w-7 h-7 flex items-center justify-center text-xs">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <div class="w-16 h-16 bg-white/20 rounded-2xl backdrop-blur-md mx-auto flex items-center justify-center mb-3 border border-white/30 shadow-inner">
+                    <i class="fa-solid fa-recycle text-3xl text-yellow-300"></i>
+                </div>
+                <h3 class="font-extrabold text-lg leading-tight">Ubah Sampah Jadi Cuan! 💵</h3>
+                <p class="text-[11px] text-emerald-100 mt-1">Dapatkan saldo instan & sembako gratis dari sampah rumah tanggamu.</p>
+            </div>
+            <div class="p-5 space-y-3">
+                <div class="bg-amber-50 border border-amber-200/80 rounded-xl p-2.5 text-left text-[11px] text-amber-900 flex items-center space-x-2">
+                    <i class="fa-solid fa-fire text-amber-500 text-sm shrink-0"></i>
+                    <span>Promo minggu ini: Harga Kardus & Tembaga naik hingga 15%!</span>
+                </div>
+                <button onclick="tutupModal('modalPromo'); bukaModal('modalProfil')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3 rounded-xl shadow-lg hover:shadow-xl transition active:scale-95 text-xs flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    <span>Login / Jual Sekarang</span>
+                </button>
+                <button onclick="tutupModal('modalPromo')" class="text-[11px] font-semibold text-slate-400 hover:text-slate-600 block mx-auto">
+                    Nanti Saja
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL INFORMASI PRODUK & SETOR BARANG -->
+    <div id="modalProduk" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-2xl p-4 shadow-2xl max-h-[85vh] overflow-y-auto animate-modal-center">
+            <div class="flex justify-between items-center mb-3">
+                <div class="flex items-center space-x-2">
+                    <div class="bg-emerald-100 text-emerald-600 p-1.5 rounded-lg text-xs">
+                        <i class="fa-solid fa-tags"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-sm">Info Produk & Setor</h3>
+                </div>
+                <button onclick="tutupModal('modalProduk')" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 text-xs">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <p class="text-[11px] font-semibold text-slate-500 mb-1.5">Kategori Berlaku & Harga/Kg:</p>
+            <div class="grid grid-cols-2 gap-1.5 text-xs mb-3">
+                <div class="bg-emerald-50 border border-emerald-200/60 p-2 rounded-lg">
+                    <p class="text-slate-500 text-[10px]">Plastik</p>
+                    <p class="font-extrabold text-emerald-700 text-xs">Rp 3.000 / kg</p>
+                </div>
+                <div class="bg-emerald-50 border border-emerald-200/60 p-2 rounded-lg">
+                    <p class="text-slate-500 text-[10px]">Besi</p>
+                    <p class="font-extrabold text-emerald-700 text-xs">Rp 5.000 / kg</p>
+                </div>
+                <div class="bg-emerald-50 border border-emerald-200/60 p-2 rounded-lg">
+                    <p class="text-slate-500 text-[10px]">Kardus</p>
+                    <p class="font-extrabold text-emerald-700 text-xs">Rp 2.000 / kg</p>
+                </div>
+                <div class="bg-emerald-50 border border-emerald-200/60 p-2 rounded-lg">
+                    <p class="text-slate-500 text-[10px]">Tembaga</p>
+                    <p class="font-extrabold text-emerald-700 text-xs">Rp 70.000 / kg</p>
+                </div>
+            </div>
+
+            <hr class="my-3 border-slate-100">
+
+            <form onsubmit="handleSetorBarang(event)" class="space-y-2.5 text-xs">
+                <h4 class="font-bold text-slate-800 text-xs">Form Penjemputan Barang</h4>
+                <div>
+                    <label class="block text-slate-600 font-semibold mb-0.5">Pilih Kategori</label>
+                    <select id="setorKategori" onchange="hitungEstimasi()" class="w-full border border-slate-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
+                        <option value="" disabled selected>-- Pilih Kategori --</option>
+                        <option value="Plastik">Plastik (Rp 3.000/kg)</option>
+                        <option value="Besi">Besi (Rp 5.000/kg)</option>
+                        <option value="Kardus">Kardus (Rp 2.000/kg)</option>
+                        <option value="Tembaga">Tembaga (Rp 70.000/kg)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-slate-600 font-semibold mb-0.5">Nama / Deskripsi Barang</label>
+                    <input type="text" id="setorNama" placeholder="Contoh: Botol Plastik / Kardus" class="w-full border border-slate-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
+                </div>
+
+                <div>
+                    <label class="block text-slate-600 font-semibold mb-0.5">Banyak Barang (Kg)</label>
+                    <input type="number" id="setorKg" min="1" step="0.5" placeholder="Contoh: 10" oninput="hitungEstimasi()" class="w-full border border-slate-200 rounded-lg px-2.5 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
+                </div>
+
+                <div class="bg-slate-50 p-2 rounded-lg border border-slate-200 flex justify-between items-center">
+                    <span class="text-slate-600 text-[11px]">Estimasi Saldo:</span>
+                    <span id="setorEstimasi" class="font-extrabold text-emerald-600 text-xs">Rp 0</span>
+                </div>
+
+                <div>
+                    <label class="block text-slate-600 font-semibold mb-0.5">Lokasi Akurat</label>
+                    <button type="button" onclick="ambilGPS()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-1.5 rounded-lg mb-1 flex items-center justify-center space-x-1 transition text-[11px]">
+                        <i class="fa-solid fa-location-dot text-red-500"></i>
+                        <span>Ambil GPS Saya</span>
+                    </button>
+                    <input type="text" id="setorGPS" readonly placeholder="Koordinat GPS (Otomatis)" class="w-full bg-slate-100 border border-slate-200 rounded-lg px-2.5 py-1.5 text-[10px] text-slate-500 mb-1">
+                    <textarea id="setorAlamat" rows="2" placeholder="Detail Alamat & Patokan Rumah" class="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-[11px]" required></textarea>
+                </div>
+
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl shadow transition active:scale-95">
+                    Kirim & Minta Jemput
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL GALERI -->
+    <div id="modalGaleri" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-2xl p-4 shadow-2xl max-h-[85vh] overflow-y-auto animate-modal-center">
+            <div class="flex justify-between items-center mb-3">
+                <div class="flex items-center space-x-2">
+                    <div class="bg-blue-100 text-blue-600 p-1.5 rounded-lg text-xs">
+                        <i class="fa-solid fa-images"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-sm">Galeri Penjemputan</h3>
+                </div>
+                <button onclick="tutupModal('modalGaleri')" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 text-xs">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200 mb-3 text-xs">
+                <p class="font-semibold text-slate-700 mb-1.5"><i class="fa-solid fa-cloud-arrow-up text-blue-500 mr-1"></i> Upload Foto Baru</p>
+                <div class="flex space-x-1.5">
+                    <input type="file" id="inputFoto" accept="image/*" class="w-full border border-slate-200 rounded-lg bg-white px-2 py-1 text-[10px]">
+                    <button onclick="uploadFoto()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-3 py-1 rounded-lg shrink-0 text-xs">
+                        Upload
+                    </button>
+                </div>
+            </div>
+
+            <div id="containerGaleri" class="grid grid-cols-2 gap-2"></div>
+        </div>
+    </div>
+
+    <!-- MODAL FACT APLIKASI -->
+    <div id="modalFact" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-2xl p-4 shadow-2xl max-h-[85vh] overflow-y-auto animate-modal-center">
+            <div class="flex justify-between items-center mb-3">
+                <div class="flex items-center space-x-2">
+                    <div class="bg-purple-100 text-purple-600 p-1.5 rounded-lg text-xs">
+                        <i class="fa-solid fa-lightbulb"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-sm">Fact & Tentang DUITIN</h3>
+                </div>
+                <button onclick="tutupModal('modalFact')" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 text-xs">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="space-y-2.5 text-xs text-slate-600">
+                <div class="bg-purple-50 p-2.5 rounded-xl border border-purple-100">
+                    <h4 class="font-bold text-purple-900 mb-1 flex items-center">
+                        <i class="fa-solid fa-earth-americas mr-1"></i> Apa itu DUITIN?
+                    </h4>
+                    <p class="text-[11px]">DUITIN adalah platform daur ulang berbasis masyarakat yang mengubah sampah rumah tangga menjadi sumber pendapatan digital atau sembako.</p>
+                </div>
+
+                <div class="space-y-1.5">
+                    <h4 class="font-bold text-slate-800 text-xs">Fakta Pengelolaan Sampah:</h4>
+                    <div class="flex items-start space-x-2 bg-slate-50 p-2 rounded-lg text-[11px]">
+                        <i class="fa-solid fa-check-circle text-emerald-500 mt-0.5"></i>
+                        <p>1 Ton kardus bekas menyelamatkan 17 pohon dewasa.</p>
+                    </div>
+                    <div class="flex items-start space-x-2 bg-slate-50 p-2 rounded-lg text-[11px]">
+                        <i class="fa-solid fa-check-circle text-emerald-500 mt-0.5"></i>
+                        <p>Tembaga memiliki nilai daur ulang paling tinggi.</p>
+                    </div>
+                    <div class="flex items-start space-x-2 bg-slate-50 p-2 rounded-lg text-[11px]">
+                        <i class="fa-solid fa-check-circle text-emerald-500 mt-0.5"></i>
+                        <p>Penjemputan gratis ongkir langsung ke rumah kamu.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PROFIL USER & SALDO -->
+    <div id="modalProfil" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-2xl p-4 shadow-2xl max-h-[85vh] overflow-y-auto animate-modal-center">
+            <div class="flex justify-between items-center mb-3">
+                <div class="flex items-center space-x-2">
+                    <div class="bg-amber-100 text-amber-600 p-1.5 rounded-lg text-xs">
+                        <i class="fa-solid fa-user-gear"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-sm">Profil & Saldo Saya</h3>
+                </div>
+                <button onclick="tutupModal('modalProfil')" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 text-xs">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="bg-gradient-to-br from-amber-500 to-yellow-600 rounded-xl p-3.5 text-white shadow-sm mb-3 space-y-2.5">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center font-bold text-base border border-white/40">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div>
+                        <h4 id="profileNama" class="font-extrabold text-sm leading-tight">Pengguna DUITIN</h4>
+                        <p id="profileAlamat" class="text-[10px] text-amber-100">Bandung, Jawa Barat</p>
+                    </div>
+                </div>
+                <div class="pt-2 border-t border-white/20 flex justify-between items-end">
+                    <div>
+                        <p class="text-[9px] text-amber-100 uppercase tracking-wider">Total Saldo Terkumpul</p>
+                        <p id="profileSaldo" class="text-lg font-black">Rp 0</p>
+                    </div>
+                    <button onclick="bukaModalTarik()" class="bg-white text-amber-900 font-extrabold text-[11px] px-3 py-1.5 rounded-lg shadow hover:bg-amber-50 active:scale-95 transition flex items-center space-x-1">
+                        <i class="fa-solid fa-hand-holding-dollar text-emerald-600"></i>
+                        <span>Tarik Uang</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex border-b border-slate-200 mb-2.5 text-xs">
+                <button id="btnTabStatus" onclick="switchTabProfil('status')" class="flex-1 py-1.5 font-bold text-emerald-600 border-b-2 border-emerald-600 text-[11px]">Status Jemput</button>
+                <button id="btnTabAdmin" onclick="switchTabProfil('admin')" class="flex-1 py-1.5 font-semibold text-slate-400 text-[11px]">Simulasi Admin</button>
+            </div>
+
+            <div id="secStatus" class="space-y-1.5 text-xs">
+                <div id="daftarStatusUser"></div>
+            </div>
+
+            <div id="secAdmin" class="hidden space-y-1.5 text-xs">
+                <p class="text-slate-500 text-[10px] mb-1.5">Admin menyetujui penjemputan & mencairkan saldo ke pengguna.</p>
+                <div id="daftarStatusAdmin"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUB-MODAL: FORM TARIK UANG -->
+    <div id="modalTarikUang" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-xs rounded-2xl p-4 shadow-2xl animate-modal-center text-xs">
+            <div class="flex justify-between items-center mb-2.5">
+                <h4 class="font-bold text-slate-800 text-xs">Penarikan Saldo</h4>
+                <button onclick="tutupModal('modalTarikUang')" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+            
+            <p class="text-slate-500 text-[11px] mb-2.5">Minimal penarikan saldo: <span class="font-bold text-emerald-600">Rp 50.000</span>.</p>
+
+            <form onsubmit="handleTarikPencairan(event)" class="space-y-2">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-0.5">Metode Penarikan</label>
+                    <select id="tarikMetode" onchange="updateLabelTarget()" class="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
+                        <option value="" disabled selected>-- Pilih Metode --</option>
+                        <option value="DANA">DANA</option>
+                        <option value="OVO">OVO</option>
+                        <option value="Bank BCA">Bank BCA</option>
+                        <option value="Bank Mandiri">Bank Mandiri</option>
+                        <option value="Bank BRI">Bank BRI</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label id="labelTarget" class="block font-semibold text-slate-700 mb-0.5">Nomor Akun / Rekening</label>
+                    <input type="number" id="tarikTarget" placeholder="Contoh: 081234567890" class="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-0.5">Nominal (Rp)</label>
+                    <input type="number" id="tarikNominal" min="50000" step="5000" placeholder="Min 50000" class="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
+                </div>
+
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl shadow transition active:scale-95 mt-1.5">
+                    Konfirmasi Penarikan
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- SCRIPT SYSTEM LOGIC -->
+    <script>
+        const HARGA = { 'Plastik': 3000, 'Besi': 5000, 'Kardus': 2000, 'Tembaga': 70000 };
+
+        let appData = JSON.parse(localStorage.getItem('DUITIN_V2_DATA')) || {
+            user: { nama: 'Pengguna DUITIN', alamat: 'Bandung, Jawa Barat' },
+            saldo: 0,
+            transaksi: [],
+            galeri: [
+                'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=400&q=80',
+                'https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?auto=format&fit=crop&w=400&q=80'
+            ]
+        };
+
+        // Dummy Live Feed
+        const dummyLiveFeed = [
+            { nama: 'Budi S.', lokasi: 'Coblong', barang: '12kg Kardus', status: 'Selesai' },
+            { nama: 'Rina M.', lokasi: 'Cicendo', barang: '5kg Tembaga', status: 'Selesai' },
+            { nama: 'Ahmad F.', lokasi: 'Regol', barang: '8kg Botol Plastik', status: 'Dalam Penjemputan' }
+        ];
+
+        function simpan() {
+            localStorage.setItem('DUITIN_V2_DATA', JSON.stringify(appData));
+            updateStateUI();
+        }
+
+        function formatRp(num) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+        }
+
+        function updateStateUI() {
+            document.getElementById('headerSaldo').innerText = formatRp(appData.saldo);
+            document.getElementById('profileSaldo').innerText = formatRp(appData.saldo);
+            document.getElementById('profileNama').innerText = appData.user.nama;
+            document.getElementById('profileAlamat').innerText = appData.user.alamat;
+            
+            // Hitung Dampak Hijau
+            const totalKg = appData.transaksi.reduce((sum, t) => sum + (t.status === 'Selesai' ? t.kg : 0), 0);
+            document.getElementById('totalKgUser').innerText = totalKg + ' Kg';
+            // 1kg kardus/kertas ~ 0.017 pohon
+            const totalPohon = (totalKg * 0.017).toFixed(1);
+            document.getElementById('totalPohonUser').innerText = totalPohon + ' Pohon';
+
+            renderLiveFeed();
+            renderGaleri();
+            renderStatusUser();
+            renderStatusAdmin();
+        }
+
+        function renderLiveFeed() {
+            const container = document.getElementById('liveFeedContainer');
+            // Gabungkan transaksi asli user yang selesai dengan dummy feed
+            const userFeed = appData.transaksi.map(t => ({
+                nama: 'Saya',
+                lokasi: 'Bandung',
+                barang: `${t.kg}kg ${t.kategori}`,
+                status: t.status
+            }));
+            
+            const list = [...userFeed, ...dummyLiveFeed].slice(0, 3);
+
+            container.innerHTML = list.map(item => `
+                <div class="bg-slate-50 border border-slate-200/70 p-2 rounded-xl flex justify-between items-center text-xs">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-extrabold">
+                            <i class="fa-solid fa-truck"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-800 text-[11px]">${item.nama} <span class="text-slate-400 font-normal">(${item.lokasi})</span></p>
+                            <p class="text-[10px] text-slate-500">${item.barang}</p>
+                        </div>
+                    </div>
+                    <span class="text-[9px] font-bold px-2 py-0.5 rounded-full ${item.status === 'Selesai' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                        ${item.status}
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        // --- SLIDER LOGIC ---
+        let currentSlide = 0;
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % 3;
+            document.getElementById('sliderWrapper').style.transform = `translateX(-${currentSlide * 100}%)`;
+            for (let i = 0; i < 3; i++) {
+                document.getElementById(`dot${i}`).className = i === currentSlide ? "w-1.5 h-1.5 rounded-full bg-white transition-all" : "w-1.5 h-1.5 rounded-full bg-white/50 transition-all";
+            }
+        }, 4000);
+
+        // --- MODAL CONTROLLER ---
+        function bukaModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function tutupModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        // --- SETOR BARANG LOGIC ---
+        function hitungEstimasi() {
+            const kat = document.getElementById('setorKategori').value;
+            const kg = parseFloat(document.getElementById('setorKg').value) || 0;
+            const total = (HARGA[kat] || 0) * kg;
+            document.getElementById('setorEstimasi').innerText = formatRp(total);
+        }
+
+        function ambilGPS() {
+            if (navigator.geolocation) {
+                Swal.fire({ title: 'Mencari GPS...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        const coords = `${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`;
+                        document.getElementById('setorGPS').value = coords;
+                        Swal.fire({ icon: 'success', title: 'GPS Berhasil!', text: coords, timer: 1500, showConfirmButton: false });
+                    },
+                    () => Swal.fire('Gagal GPS', 'Aktifkan izin lokasi browser.', 'error'),
+                    { enableHighAccuracy: true }
+                );
+            }
+        }
+
+        function handleSetorBarang(e) {
+            e.preventDefault();
+            const kat = document.getElementById('setorKategori').value;
+            const nama = document.getElementById('setorNama').value;
+            const kg = parseFloat(document.getElementById('setorKg').value);
+            const gps = document.getElementById('setorGPS').value || 'Manual';
+            const alamat = document.getElementById('setorAlamat').value;
+
+            const txBaru = {
+                id: 'DIT-' + Date.now(),
+                kategori: kat,
+                nama,
+                kg,
+                total: HARGA[kat] * kg,
+                gps,
+                alamat,
+                status: 'Menunggu Penjemputan',
+                tanggal: new Date().toLocaleString('id-ID')
+            };
+
+            appData.transaksi.unshift(txBaru);
+            simpan();
+
+            e.target.reset();
+            document.getElementById('setorEstimasi').innerText = 'Rp 0';
+            tutupModal('modalProduk');
+
+            Swal.fire({ icon: 'success', title: 'Permintaan Terkirim!', text: 'Admin akan segera menjemput barang kamu.', confirmButtonColor: '#059669' });
+            bukaModal('modalProfil');
+        }
+
+        // --- GALERI LOGIC ---
+        function uploadFoto() {
+            const input = document.getElementById('inputFoto');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    appData.galeri.unshift(e.target.result);
+                    simpan();
+                    input.value = '';
+                    Swal.fire({ icon: 'success', title: 'Foto Terupload!', timer: 1200, showConfirmButton: false });
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function hapusFoto(index) {
+            Swal.fire({
+                title: 'Hapus Foto?',
+                text: 'Foto ini akan dihapus dari galeri.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: 'Hapus'
+            }).then((res) => {
+                if (res.isConfirmed) {
+                    appData.galeri.splice(index, 1);
+                    simpan();
+                }
+            });
+        }
+
+        function renderGaleri() {
+            const container = document.getElementById('containerGaleri');
+            if (appData.galeri.length === 0) {
+                container.innerHTML = `<p class="col-span-2 text-center text-slate-400 py-3 text-[11px]">Belum ada foto kegiatan.</p>`;
+                return;
+            }
+            container.innerHTML = appData.galeri.map((img, i) => `
+                <div class="relative group rounded-lg overflow-hidden aspect-square border border-slate-200">
+                    <img src="${img}" class="w-full h-full object-cover">
+                    <button onclick="hapusFoto(${i})" class="absolute top-1 right-1 bg-red-600 text-white w-5 h-5 rounded-full text-[9px] flex items-center justify-center shadow hover:bg-red-700">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // --- PROFIL & ADMIN STATUS ---
+        function switchTabProfil(tab) {
+            const secStatus = document.getElementById('secStatus');
+            const secAdmin = document.getElementById('secAdmin');
+            const btnStatus = document.getElementById('btnTabStatus');
+            const btnAdmin = document.getElementById('btnTabAdmin');
+
+            if (tab === 'status') {
+                secStatus.classList.remove('hidden');
+                secAdmin.classList.add('hidden');
+                btnStatus.className = "flex-1 py-1.5 font-bold text-emerald-600 border-b-2 border-emerald-600 text-[11px]";
+                btnAdmin.className = "flex-1 py-1.5 font-semibold text-slate-400 text-[11px]";
+            } else {
+                secAdmin.classList.remove('hidden');
+                secStatus.classList.add('hidden');
+                btnAdmin.className = "flex-1 py-1.5 font-bold text-emerald-600 border-b-2 border-emerald-600 text-[11px]";
+                btnStatus.className = "flex-1 py-1.5 font-semibold text-slate-400 text-[11px]";
+            }
+        }
+
+        function renderStatusUser() {
+            const container = document.getElementById('daftarStatusUser');
+            if (appData.transaksi.length === 0) {
+                container.innerHTML = `<p class="text-center text-slate-400 py-3 text-[11px]">Belum ada transaksi.</p>`;
+                return;
+            }
+            container.innerHTML = appData.transaksi.map(t => `
+                <div class="bg-slate-50 p-2 rounded-lg border border-slate-200 space-y-1">
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-slate-800 text-[11px]">${t.nama} (${t.kg} kg)</span>
+                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full ${t.status === 'Selesai' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${t.status}</span>
+                    </div>
+                    <div class="flex justify-between text-[10px] text-slate-500">
+                        <span>Alamat: ${t.alamat}</span>
+                        <span class="font-bold text-emerald-600">${formatRp(t.total)}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderStatusAdmin() {
+            const container = document.getElementById('daftarStatusAdmin');
+            const pending = appData.transaksi.filter(t => t.status !== 'Selesai');
+            if (pending.length === 0) {
+                container.innerHTML = `<p class="text-center text-slate-400 py-3 text-[11px]">Tidak ada antrean jemput.</p>`;
+                return;
+            }
+            container.innerHTML = pending.map(t => `
+                <div class="bg-slate-50 p-2 rounded-lg border border-slate-200 space-y-1">
+                    <div class="flex justify-between">
+                        <span class="font-bold text-slate-800 text-[11px]">${t.nama} - ${t.kg} kg</span>
+                        <span class="font-extrabold text-emerald-600 text-[11px]">${formatRp(t.total)}</span>
+                    </div>
+                    <p class="text-[9px] text-slate-500">Alamat: ${t.alamat} (GPS: ${t.gps})</p>
+                    <button onclick="selesaikanJemput('${t.id}')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1 rounded-md text-[10px]">
+                        Tiba & Cairkan Saldo User
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function selesaikanJemput(id) {
+            const idx = appData.transaksi.findIndex(t => t.id === id);
+            if (idx !== -1) {
+                appData.transaksi[idx].status = 'Selesai';
+                appData.saldo += appData.transaksi[idx].total;
+                simpan();
+                Swal.fire('Selesai!', 'Saldo berhasil dicairkan ke profil user.', 'success');
+            }
+        }
+
+        // --- TARIK UANG LOGIC ---
+        function bukaModalTarik() {
+            document.getElementById('modalTarikUang').classList.remove('hidden');
+        }
+
+        function updateLabelTarget() {
+            const m = document.getElementById('tarikMetode').value;
+            document.getElementById('labelTarget').innerText = (m === 'DANA' || m === 'OVO') ? 'Nomor HP E-Wallet' : 'Nomor Rekening';
+        }
+
+        function handleTarikPencairan(e) {
+            e.preventDefault();
+            const nom = parseFloat(document.getElementById('tarikNominal').value);
+            const met = document.getElementById('tarikMetode').value;
+            const target = document.getElementById('tarikTarget').value;
+
+            if (nom < 50000) {
+                Swal.fire('Batas Penarikan', 'Minimal penarikan saldo adalah Rp 50.000', 'warning');
+                return;
+            }
+            if (nom > appData.saldo) {
+                Swal.fire('Saldo Kurang', `Saldo kamu saat ini ${formatRp(appData.saldo)}`, 'error');
+                return;
+            }
+
+            appData.saldo -= nom;
+            simpan();
+            tutupModal('modalTarikUang');
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Penarikan Diproses!',
+                html: `Penarikan <b>${formatRp(nom)}</b> via <b>${met} (${target})</b> sedang dikirim.`,
+                confirmButtonColor: '#059669'
+            });
+        }
+
+        // Initial Load
+        updateStateUI();
+    </script>
 </body>
 </html>
