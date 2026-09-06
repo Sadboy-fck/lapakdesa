@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DUITIN - Tukar Sampah Jadi Duit & Sembako</title>
+    <title>DUITIN - Sampah Jadi Duit & Sembako</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome Icons -->
@@ -24,7 +24,7 @@
             100% { opacity: 1; transform: scale(1) translateY(0); }
         }
         .animate-modal-center {
-            animation: modalCenterPop 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: modalCenterPop 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         /* Running Text */
@@ -44,7 +44,7 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between text-slate-800">
 
-    <!-- MAIN APP WRAPPER (Mobile-First Container) -->
+    <!-- MAIN APP WRAPPER (Mobile-First) -->
     <div class="max-w-md mx-auto w-full min-h-screen bg-white shadow-xl flex flex-col relative pb-6">
         
         <!-- 1. HEADER -->
@@ -59,14 +59,14 @@
                 </div>
             </div>
             <!-- Quick Saldo Badge -->
-            <div onclick="bukaModal('modalProfil')" class="bg-emerald-800/60 hover:bg-emerald-800 border border-emerald-400/30 px-3 py-1 rounded-full flex items-center space-x-1.5 cursor-pointer transition">
+            <div onclick="bukaModal('modalProfil')" class="bg-emerald-800/60 hover:bg-emerald-800 border border-emerald-400/30 px-3 py-1 rounded-full flex items-center space-x-1.5 cursor-pointer transition active:scale-95">
                 <i class="fa-solid fa-wallet text-yellow-300 text-xs"></i>
                 <span id="headerSaldo" class="text-xs font-bold">Rp 0</span>
             </div>
         </header>
 
         <!-- CONTENT AREA -->
-        <main class="p-3.5 space-y-3.5 flex-1">
+        <main class="p-3.5 space-y-4 flex-1">
 
             <!-- 2. IMAGE SLIDER -->
             <div class="relative w-full rounded-2xl overflow-hidden shadow-sm aspect-[21/9] bg-slate-100">
@@ -111,53 +111,29 @@
                 </div>
             </div>
 
-            <!-- 4. MENU UTAMA (4 Grid Ringkas & Pas di Layar) -->
+            <!-- 4. MENU UTAMA (4 Ikon Sejajar Pas di Layar, Tanpa Teks) -->
             <div>
-                <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 px-0.5">Menu Utama</h2>
-                <div class="grid grid-cols-2 gap-2.5">
+                <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2.5 text-center">Menu Utama</h2>
+                <div class="grid grid-cols-4 gap-3 px-1">
                     
-                    <!-- GRID 1: Info Produk -->
-                    <button onclick="bukaModal('modalProduk')" class="bg-white p-2.5 rounded-xl border border-slate-200/80 shadow-sm hover:shadow-md active:scale-95 transition text-left flex items-center space-x-2.5 group relative overflow-hidden">
-                        <div class="w-9 h-9 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold shrink-0">
-                            <i class="fa-solid fa-tags text-sm"></i>
-                        </div>
-                        <div class="min-w-0 flex-1">
-                            <h3 class="font-bold text-slate-800 text-xs truncate">Info Produk</h3>
-                            <p class="text-[10px] text-slate-400 truncate">Harga & Setor</p>
-                        </div>
+                    <!-- IKON 1: Info Produk -->
+                    <button onclick="bukaModal('modalProduk')" class="flex flex-col items-center justify-center p-3.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/60 rounded-2xl shadow-sm hover:shadow active:scale-90 transition-all">
+                        <i class="fa-solid fa-tags text-xl text-emerald-600"></i>
                     </button>
 
-                    <!-- GRID 2: Galeri -->
-                    <button onclick="bukaModal('modalGaleri')" class="bg-white p-2.5 rounded-xl border border-slate-200/80 shadow-sm hover:shadow-md active:scale-95 transition text-left flex items-center space-x-2.5 group relative overflow-hidden">
-                        <div class="w-9 h-9 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold shrink-0">
-                            <i class="fa-solid fa-camera text-sm"></i>
-                        </div>
-                        <div class="min-w-0 flex-1">
-                            <h3 class="font-bold text-slate-800 text-xs truncate">Galeri Kegiatan</h3>
-                            <p class="text-[10px] text-slate-400 truncate">Foto Penjemputan</p>
-                        </div>
+                    <!-- IKON 2: Galeri -->
+                    <button onclick="bukaModal('modalGaleri')" class="flex flex-col items-center justify-center p-3.5 bg-blue-50 hover:bg-blue-100 border border-blue-200/60 rounded-2xl shadow-sm hover:shadow active:scale-90 transition-all">
+                        <i class="fa-solid fa-camera text-xl text-blue-600"></i>
                     </button>
 
-                    <!-- GRID 3: Fact Aplikasi -->
-                    <button onclick="bukaModal('modalFact')" class="bg-white p-2.5 rounded-xl border border-slate-200/80 shadow-sm hover:shadow-md active:scale-95 transition text-left flex items-center space-x-2.5 group relative overflow-hidden">
-                        <div class="w-9 h-9 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center font-bold shrink-0">
-                            <i class="fa-solid fa-lightbulb text-sm"></i>
-                        </div>
-                        <div class="min-w-0 flex-1">
-                            <h3 class="font-bold text-slate-800 text-xs truncate">Fact Aplikasi</h3>
-                            <p class="text-[10px] text-slate-400 truncate">Panduan & Edukasi</p>
-                        </div>
+                    <!-- IKON 3: Fact Aplikasi -->
+                    <button onclick="bukaModal('modalFact')" class="flex flex-col items-center justify-center p-3.5 bg-purple-50 hover:bg-purple-100 border border-purple-200/60 rounded-2xl shadow-sm hover:shadow active:scale-90 transition-all">
+                        <i class="fa-solid fa-lightbulb text-xl text-purple-600"></i>
                     </button>
 
-                    <!-- GRID 4: Profil User -->
-                    <button onclick="bukaModal('modalProfil')" class="bg-white p-2.5 rounded-xl border border-slate-200/80 shadow-sm hover:shadow-md active:scale-95 transition text-left flex items-center space-x-2.5 group relative overflow-hidden">
-                        <div class="w-9 h-9 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center font-bold shrink-0">
-                            <i class="fa-solid fa-user-gear text-sm"></i>
-                        </div>
-                        <div class="min-w-0 flex-1">
-                            <h3 class="font-bold text-slate-800 text-xs truncate">Profil & Saldo</h3>
-                            <p class="text-[10px] text-slate-400 truncate">Tarik Uang & Akun</p>
-                        </div>
+                    <!-- IKON 4: Profil User -->
+                    <button onclick="bukaModal('modalProfil')" class="flex flex-col items-center justify-center p-3.5 bg-amber-50 hover:bg-amber-100 border border-amber-200/60 rounded-2xl shadow-sm hover:shadow active:scale-90 transition-all">
+                        <i class="fa-solid fa-user-gear text-xl text-amber-600"></i>
                     </button>
 
                 </div>
@@ -176,6 +152,35 @@
             </div>
         </footer>
 
+    </div>
+
+    <!-- ==================== POPUP PROMO & WELCOME (Otomatis Tampil di Awal) ==================== -->
+    <div id="modalPromo" class="fixed inset-0 bg-black/70 backdrop-blur-md z-[100] flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-xs rounded-3xl overflow-hidden shadow-2xl animate-modal-center text-center">
+            <div class="bg-gradient-to-br from-emerald-500 to-teal-700 p-6 text-white relative">
+                <button onclick="tutupModal('modalPromo')" class="absolute top-3 right-3 text-white/80 hover:text-white bg-black/20 rounded-full w-7 h-7 flex items-center justify-center text-xs">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <div class="w-16 h-16 bg-white/20 rounded-2xl backdrop-blur-md mx-auto flex items-center justify-center mb-3 border border-white/30 shadow-inner">
+                    <i class="fa-solid fa-recycle text-3xl text-yellow-300"></i>
+                </div>
+                <h3 class="font-extrabold text-lg leading-tight">Ubah Sampah Jadi Cuan! 💵</h3>
+                <p class="text-[11px] text-emerald-100 mt-1">Dapatkan saldo instan & sembako gratis dari sampah rumah tanggamu.</p>
+            </div>
+            <div class="p-5 space-y-3">
+                <div class="bg-amber-50 border border-amber-200/80 rounded-xl p-2.5 text-left text-[11px] text-amber-900 flex items-center space-x-2">
+                    <i class="fa-solid fa-fire text-amber-500 text-sm shrink-0"></i>
+                    <span>Promo minggu ini: Harga Kardus & Tembaga naik hingga 15%!</span>
+                </div>
+                <button onclick="tutupModal('modalPromo'); bukaModal('modalProfil')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3 rounded-xl shadow-lg hover:shadow-xl transition active:scale-95 text-xs flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    <span>Login / Jual Sekarang</span>
+                </button>
+                <button onclick="tutupModal('modalPromo')" class="text-[11px] font-semibold text-slate-400 hover:text-slate-600 block mx-auto">
+                    Nanti Saja
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- ==================== POPUP MODALS SECTION (Positioned Top/Center) ==================== -->
@@ -257,14 +262,14 @@
                     <textarea id="setorAlamat" rows="2" placeholder="Detail Alamat & Patokan Rumah" class="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-[11px]" required></textarea>
                 </div>
 
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl shadow transition">
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl shadow transition active:scale-95">
                     Kirim & Minta Jemput
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- MODAL 2: GALERI (UPLOAD & HAPUS FOTO) -->
+    <!-- MODAL 2: GALERI -->
     <div id="modalGaleri" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-sm rounded-2xl p-4 shadow-2xl max-h-[85vh] overflow-y-auto animate-modal-center">
             <div class="flex justify-between items-center mb-3">
@@ -290,7 +295,7 @@
             </div>
 
             <div id="containerGaleri" class="grid grid-cols-2 gap-2">
-                <!-- Foto di-render via JavaScript -->
+                <!-- Foto di-render via JS -->
             </div>
         </div>
     </div>
@@ -434,7 +439,7 @@
                     <input type="number" id="tarikNominal" min="50000" step="5000" placeholder="Min 50000" class="w-full border border-slate-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-500" required>
                 </div>
 
-                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl shadow transition mt-1.5">
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 rounded-xl shadow transition active:scale-95 mt-1.5">
                     Konfirmasi Penarikan
                 </button>
             </form>
