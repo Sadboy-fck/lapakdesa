@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DUITIN - Tukar Sampah Jadi Cuan & Sembako</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 untuk Notifikasi Modern -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="pb-12">
+
+    <!-- Header & Navbar -->
+    <nav class="bg-emerald-600 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-recycle text-2xl text-yellow-300"></i>
+                <span class="text-2xl font-black tracking-wider">DUITIN</span>
+            </div>
+            <div class="flex items-center space-x-3 bg-emerald-700 px-3 py-1.5 rounded-full border border-emerald-500">
+                <i class="fa-solid fa-wallet text-yellow-300"></i>
+                <div class="text-right">
+                    <p class="text-xs text-emerald-200 font-medium">Saldo Profil</p>
+                    <p id="navSaldo" class="text-sm font-bold">Rp 0</p>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="max-w-4xl mx-auto px-4 mt-6">
+
+        <!-- Banner Info Harga / Kartu Saldo -->
+        <div class="bg-gradient-to-r from-emerald-500 to-teal-700 rounded-2xl p-6 text-white shadow-xl mb-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h1 class="text-xl font-bold">Ubah Barang Bekas Jadi Rupiah!</h1>
+                    <p class="text-sm text-emerald-100 mt-1">
+                        Kategori berlaku: Plastik, Besi, Kardus, dan Tembaga. Penjemputan langsung ke lokasi kamu.
+                    </p>
+                </div>
+                <button onclick="bukaModalTarik()" class="bg-yellow-400 hover:bg-yellow-300 text-emerald-950 font-bold px-5 py-2.5 rounded-xl shadow-md transition transform active:scale-95 flex items-center space-x-2 w-full md:w-auto justify-center">
+                    <i class="fa-solid fa-money-bill-transfer"></i>
+                    <span>Tarik Uang</span>
+                </button>
+            </div>
+            
+            <!-- Estimasi Harga Per Kg -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6 pt-4 border-t border-emerald-400/40 text-xs">
+                <div class="bg-white/10 p-2.5 rounded-lg backdrop-blur-sm">
+                    <p class="text-emerald-200">Plastik</p>
+                    <p class="font-bold text-sm">Rp 3.000 / kg</p>
+                </div>
+                <div class="bg-white/10 p-2.5 rounded-lg backdrop-blur-sm">
+                    <p class="text-emerald-200">Besi</p>
+                    <p class="font-bold text-sm">Rp 5.000 / kg</p>
+                </div>
+                <div class="bg-white/10 p-2.5 rounded-lg backdrop-blur-sm">
+                    <p class="text-emerald-200">Kardus</p>
+                    <p class="font-bold text-sm">Rp 2.000 / kg</p>
+                </div>
+                <div class="bg-white/10 p-2.5 rounded-lg backdrop-blur-sm">
+                    <p class="text-emerald-200">Tembaga</p>
+                    <p class="font-bold text-sm">Rp 70.000 / kg</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Navigasi -->
+        <div class="flex border-b border-gray-200 mb-6 bg-white rounded-xl shadow-sm p-1">
+            <button id="tabFormBtn" onclick="switchTab('form')" class="flex-1 py-2.5 text-center font-bold text-emerald-600 border-b-2 border-emerald-600 rounded-lg text-sm transition">
+                <i class="fa-solid fa-box-open mr-1"></i> Jual Barang
+            </button>
+            <button id="tabRiwayatBtn" onclick="switchTab('riwayat')" class="flex-1 py-2.5 text-center font-semibold text-gray-500 rounded-lg text-sm transition hover:text-emerald-600">
+                <i class="fa-solid fa-clock-rotate-left mr-1"></i> Status Jemput
+            </button>
+            <button id="tabAdminBtn" onclick="switchTab('admin')" class="flex-1 py-2.5 text-center font-semibold text-gray-500 rounded-lg text-sm transition hover:text-emerald-600">
+                <i class="fa-solid fa-user-gear mr-1"></i> Panel Admin
+            </button>
+        </div>
+
+        <!-- FORM SETOR BARANG -->
+        <div id="sectionForm" class="bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+            <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                <i class="fa-solid fa-truck-pickup text-emerald-600 mr-2"></i> Form Permintaan Penjemputan
+            </h2>
+
+            <form id="formSetor" onsubmit="handleProsesJual(event)" class="space-y-4">
+                <!-- Kategori Barang -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Pilih Kategori Barang</label>
+                    <select id="kategori" onchange="hitungEstimasi()" class="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none" required>
+                        <option value="" disabled selected>-- Pilih Kategori --</option>
+                        <option value="Plastik">Plastik (Rp 3.000/kg)</option>
+                        <option value="Besi">Besi (Rp 5.000/kg)</option>
+                        <option value="Kardus">Kardus (Rp 2.000/kg)</option>
+                        <option value="Tembaga">Tembaga (Rp 70.000/kg)</option>
+                    </select>
+                </div>
+
+                <!-- Nama Produk -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Produk / Deskripsi Singkat</label>
+                    <input type="text" id="namaProduk" placeholder="Contoh: Botol Mineral 2 Karung / Kabel Tembaga Bekas" class="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none" required>
+                </div>
+
+                <!-- Banyak Barang (Kg) -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Banyak Barang (Kg)</label>
+                    <input type="number" id="jumlahKg" min="1" step="0.5" placeholder="Contoh: 10" oninput="hitungEstimasi()" class="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none" required>
+                </div>
+
+                <!-- Estimasi Saldo Diterima -->
+                <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex justify-between items-center text-sm">
+                    <span class="text-emerald-800 font-medium">Estimasi Saldo Diterima:</span>
+                    <span id="estimasiNilai" class="text-emerald-700 font-bold text-base">Rp 0</span>
+                </div>
+
+                <!-- Share Lokasi Akurat -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Lokasi Penjemputan Akurat</label>
+                    <div class="flex space-x-2 mb-2">
+                        <button type="button" onclick="dapatkanLokasiGPS()" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-semibold px-4 py-2 rounded-xl text-sm flex items-center transition">
+                            <i class="fa-solid fa-location-dot mr-2 text-emerald-600"></i> Ambil Titik GPS Saya
+                        </button>
+                    </div>
+                    <input type="text" id="koordinat" readonly placeholder="Koordinat GPS (Otomatis)" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-4 py-2 text-xs text-gray-600 mb-2">
+                    <textarea id="alamatDetail" rows="2" placeholder="Tuliskan alamat lengkap / patokan lokasi (misal: Samping Pos Ronda No. 12)" class="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm" required></textarea>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg transition duration-200 flex justify-center items-center">
+                    <i class="fa-solid fa-paper-plane mr-2"></i> Kirim Permintaan & Minta Jemput
+                </button>
+            </form>
+        </div>
+
+        <!-- TAB STATUS & RIWAYAT -->
+        <div id="sectionRiwayat" class="hidden space-y-4">
+            <h2 class="text-lg font-bold text-gray-800 mb-2 flex items-center">
+                <i class="fa-solid fa-list-check text-emerald-600 mr-2"></i> Status Penjemputan Barang Kamu
+            </h2>
+            <div id="daftarRiwayat" class="space-y-3">
+                <!-- Konten dinamis dari JS -->
+            </div>
+        </div>
+
+        <!-- TAB ADMIN (SIMULASI PENJEMPUTAN) -->
+        <div id="sectionAdmin" class="hidden bg-white rounded-2xl p-6 shadow-md border border-gray-100">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-bold text-gray-800 flex items-center">
+                    <i class="fa-solid fa-user-shield text-emerald-600 mr-2"></i> Panel Kelola Admin
+                </h2>
+                <span class="text-xs bg-emerald-100 text-emerald-800 font-semibold px-2.5 py-1 rounded-full">Simulasi Pengemudi / Admin</span>
+            </div>
+            <p class="text-xs text-gray-500 mb-4">Sebagai Admin, kamu dapat menyetujui lokasi penjemputan dan menyelesaikan transaksi agar saldo pengguna bertambah secara otomatis.</p>
+            <div id="daftarAdmin" class="space-y-4">
+                <!-- Konten dinamis dari JS -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL PENARIKAN SALDO -->
+    <div id="modalTarik" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden z-50 flex justify-center items-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl relative animate-fade-in">
+            <button onclick="tutupModalTarik()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+
+            <h3 class="text-lg font-bold text-gray-800 mb-1 flex items-center">
+                <i class="fa-solid fa-hand-holding-dollar text-emerald-600 mr-2"></i> Penarikan Saldo
+            </h3>
+            <p class="text-xs text-gray-500 mb-4">Minimal batas penarikan adalah <span class="font-bold text-emerald-600">Rp 50.000</span>.</p>
+
+            <div class="bg-gray-50 p-3 rounded-xl border border-gray-200 mb-4 flex justify-between items-center">
+                <span class="text-sm text-gray-600 font-medium">Saldo Kamu Saat Ini:</span>
+                <span id="modalSaldoSaatIni" class="text-base font-bold text-emerald-700">Rp 0</span>
+            </div>
+
+            <form onsubmit="handleTarikUang(event)" class="space-y-4">
+                <!-- Opsi Metode Penarikan -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Metode Penarikan</label>
+                    <select id="metodePenarikan" onchange="toggleFormMetode()" class="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none" required>
+                        <option value="" disabled selected>-- Pilih Metode --</option>
+                        <optgroup label="E-Wallet">
+                            <option value="DANA">DANA</option>
+                            <option value="OVO">OVO</option>
+                        </optgroup>
+                        <optgroup label="Transfer Bank">
+                            <option value="Bank BCA">Bank BCA</option>
+                            <option value="Bank Mandiri">Bank Mandiri</option>
+                            <option value="Bank BRI">Bank BRI</option>
+                            <option value="Bank BNI">Bank BNI</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <!-- Nomor Rekening / No HP E-Wallet -->
+                <div>
+                    <label id="labelNomorTujuan" class="block text-sm font-semibold text-gray-700 mb-1">Nomor Akun / Rekening</label>
+                    <input type="number" id="nomorTujuan" placeholder="Contoh: 081234567890" class="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none" required>
+                </div>
+
+                <!-- Nominal Penarikan -->
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Nominal Penarikan (Rp)</label>
+                    <input type="number" id="nominalPenarikan" min="50000" step="5000" placeholder="Minimal 50000" class="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-emerald-500 focus:outline-none" required>
+                </div>
+
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-lg transition">
+                    Konfirmasi Penarikan
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC (NO BUG & PERSISTEN LOCALSTORAGE) -->
+    <script>
+        // Harga dasar barang per Kg
+        const HARGA_BARANG = {
+            'Plastik': 3000,
+            'Besi': 5000,
+            'Kardus': 2000,
+            'Tembaga': 70000
+        };
+
+        // Inisialisasi Data dari LocalStorage
+        let dataApp = JSON.parse(localStorage.getItem('DUITIN_DATA')) || {
+            saldo: 0,
+            transaksi: []
+        };
+
+        // Simpan Data ke LocalStorage
+        function simpanData() {
+            localStorage.setItem('DUITIN_DATA', JSON.stringify(dataApp));
+            updateUI();
+        }
+
+        // Format Angka ke Rupiah
+        function formatRupiah(angka) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(angka);
+        }
+
+        // Update Seluruh Komponen Antarmuka
+        function updateUI() {
+            document.getElementById('navSaldo').innerText = formatRupiah(dataApp.saldo);
+            document.getElementById('modalSaldoSaatIni').innerText = formatRupiah(dataApp.saldo);
+            renderRiwayat();
+            renderAdmin();
+        }
+
+        // Hitung Estimasi Nilai Jual
+        function hitungEstimasi() {
+            const kat = document.getElementById('kategori').value;
+            const kg = parseFloat(document.getElementById('jumlahKg').value) || 0;
+            const estimasi = (HARGA_BARANG[kat] || 0) * kg;
+            document.getElementById('estimasiNilai').innerText = formatRupiah(estimasi);
+        }
+
+        // Share Lokasi GPS Akurat
+        function dapatkanLokasiGPS() {
+            if (navigator.geolocation) {
+                Swal.fire({
+                    title: 'Mendapatkan GPS...',
+                    text: 'Mohon tunggu sebentar',
+                    allowOutsideClick: false,
+                    didOpen: () => { Swal.showLoading(); }
+                });
+
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        const lat = pos.coords.latitude;
+                        const lng = pos.coords.longitude;
+                        document.getElementById('koordinat').value = `${lat}, ${lng}`;
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Lokasi Akurat Ditemukan!',
+                            text: `Titik GPS: ${lat.toFixed(5)}, ${lng.toFixed(5)}`,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    },
+                    (err) => {
+                        Swal.fire('Gagal Akses GPS', 'Silakan aktifkan izin lokasi di browser kamu atau isi alamat secara manual.', 'error');
+                    },
+                    { enableHighAccuracy: true }
+                );
+            } else {
+                Swal.fire('Fitur Tidak Didukung', 'Browser kamu tidak mendukung integrasi GPS.', 'warning');
+            }
+        }
+
+        // Handle Permintaan Penjemputan Barang
+        function handleProsesJual(e) {
+            e.preventDefault();
+            const kategori = document.getElementById('kategori').value;
+            const namaProduk = document.getElementById('namaProduk').value;
+            const jumlahKg = parseFloat(document.getElementById('jumlahKg').value);
+            const koordinat = document.getElementById('koordinat').value;
+            const alamatDetail = document.getElementById('alamatDetail').value;
+
+            const totalEstimasi = HARGA_BARANG[kategori] * jumlahKg;
+
+            const transaksiBaru = {
+                id: 'DIT-' + Date.now(),
+                kategori,
+                namaProduk,
+                jumlahKg,
+                totalEstimasi,
+                koordinat: koordinat || 'Manual Location',
+                alamatDetail,
+                status: 'Menunggu Admin', // Status: Menunggu Admin, Dalam Penjemputan, Selesai
+                tanggal: new Date().toLocaleString('id-ID')
+            };
+
+            dataApp.transaksi.unshift(transaksiBaru);
+            simpanData();
+
+            // Reset Form
+            document.getElementById('formSetor').reset();
+            document.getElementById('estimasiNilai').innerText = 'Rp 0';
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Permintaan Terkirim!',
+                text: 'Admin akan segera menuju ke lokasi kamu untuk penjemputan.',
+                confirmButtonColor: '#059669'
+            });
+
+            switchTab('riwayat');
+        }
+
+        // Render Riwayat Permintaan User
+        function renderRiwayat() {
+            const container = document.getElementById('daftarRiwayat');
+            if (dataApp.transaksi.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 bg-white rounded-2xl shadow-sm">
+                        <i class="fa-solid fa-box-open text-4xl text-gray-300 mb-2"></i>
+                        <p class="text-gray-500 text-sm">Belum ada permintaan penjemputan barang.</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = dataApp.transaksi.map(item => {
+                let badgeStatus = '';
+                if(item.status === 'Menunggu Admin') {
+                    badgeStatus = '<span class="bg-yellow-100 text-yellow-800 text-xs px-2.5 py-1 rounded-full font-semibold">Menunggu Penjemputan</span>';
+                } else if(item.status === 'Dalam Penjemputan') {
+                    badgeStatus = '<span class="bg-blue-100 text-blue-800 text-xs px-2.5 py-1 rounded-full font-semibold">Penjemput Dalam Perjalanan</span>';
+                } else if(item.status === 'Selesai') {
+                    badgeStatus = '<span class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-semibold">Selesai & Saldo Masuk</span>';
+                }
+
+                const mapsUrl = item.koordinat.includes(',') ? `https://maps.google.com/?q=${item.koordinat}` : '#';
+
+                return `
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <h4 class="font-bold text-gray-800">${item.namaProduk} (${item.kategori})</h4>
+                                <p class="text-xs text-gray-400">${item.tanggal}</p>
+                            </div>
+                            ${badgeStatus}
+                        </div>
+                        <div class="text-sm text-gray-600 space-y-1 mb-3">
+                            <p><span class="font-medium">Berat:</span> ${item.jumlahKg} Kg</p>
+                            <p><span class="font-medium">Estimasi Nilai:</span> <span class="font-bold text-emerald-600">${formatRupiah(item.totalEstimasi)}</span></p>
+                            <p><span class="font-medium">Alamat:</span> ${item.alamatDetail}</p>
+                        </div>
+                        ${item.koordinat.includes(',') ? `
+                            <a href="${mapsUrl}" target="_blank" class="inline-flex items-center text-xs text-blue-600 font-semibold hover:underline">
+                                <i class="fa-solid fa-map-location-dot mr-1"></i> Lihat Titik Map Lokasi
+                            </a>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render Panel Simulasi Admin
+        function renderAdmin() {
+            const container = document.getElementById('daftarAdmin');
+            const transaksiAktif = dataApp.transaksi.filter(t => t.status !== 'Selesai');
+
+            if (transaksiAktif.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-6 bg-gray-50 rounded-xl">
+                        <p class="text-gray-500 text-sm">Tidak ada tugas penjemputan pending.</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = transaksiAktif.map(item => `
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <span class="text-xs font-bold text-gray-400">${item.id}</span>
+                            <h4 class="font-bold text-gray-800">${item.namaProduk} - ${item.jumlahKg} Kg</h4>
+                        </div>
+                        <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-1 rounded">${formatRupiah(item.totalEstimasi)}</span>
+                    </div>
+                    <p class="text-xs text-gray-600 mb-1"><i class="fa-solid fa-location-dot text-red-500 mr-1"></i> ${item.alamatDetail}</p>
+                    <p class="text-xs text-gray-500 mb-3">GPS: ${item.koordinat}</p>
+                    
+                    <div class="flex space-x-2">
+                        ${item.status === 'Menunggu Admin' ? `
+                            <button onclick="prosesAdminStatus('${item.id}', 'Dalam Penjemputan')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition">
+                                <i class="fa-solid fa-truck mr-1"></i> Jalan Jemput
+                            </button>
+                        ` : ''}
+                        
+                        ${item.status === 'Dalam Penjemputan' ? `
+                            <button onclick="prosesAdminSelesai('${item.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-2 rounded-lg transition">
+                                <i class="fa-solid fa-circle-check mr-1"></i> Tiba & Cairkan Saldo User
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Ubah Status oleh Admin
+        function prosesAdminStatus(id, statusBaru) {
+            const idx = dataApp.transaksi.findIndex(t => t.id === id);
+            if (idx !== -1) {
+                dataApp.transaksi[idx].status = statusBaru;
+                simpanData();
+                Swal.fire('Status Diperbarui', `Permintaan diubah menjadi: ${statusBaru}`, 'success');
+            }
+        }
+
+        // Menyelesaikan Penjemputan & Menambah Saldo User
+        function prosesAdminSelesai(id) {
+            const idx = dataApp.transaksi.findIndex(t => t.id === id);
+            if (idx !== -1) {
+                const item = dataApp.transaksi[idx];
+                item.status = 'Selesai';
+                dataApp.saldo += item.totalEstimasi; // Saldo Otomatis Masuk
+                simpanData();
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Penjemputan Selesai!',
+                    text: `Saldo sebesar ${formatRupiah(item.totalEstimasi)} berhasil ditambahkan ke profil user.`,
+                    confirmButtonColor: '#059669'
+                });
+            }
+        }
+
+        // Modal Penarikan Saldo
+        function bukaModalTarik() {
+            document.getElementById('modalTarik').classList.remove('hidden');
+        }
+
+        function tutupModalTarik() {
+            document.getElementById('modalTarik').classList.add('hidden');
+        }
+
+        function toggleFormMetode() {
+            const metode = document.getElementById('metodePenarikan').value;
+            const label = document.getElementById('labelNomorTujuan');
+            if(metode === 'DANA' || metode === 'OVO') {
+                label.innerText = 'Nomor HP E-Wallet (' + metode + ')';
+            } else {
+                label.innerText = 'Nomor Rekening (' + metode + ')';
+            }
+        }
+
+        // Handle Permintaan Penarikan Uang
+        function handleTarikUang(e) {
+            e.preventDefault();
+            const nominal = parseFloat(document.getElementById('nominalPenarikan').value);
+            const metode = document.getElementById('metodePenarikan').value;
+            const noTujuan = document.getElementById('nomorTujuan').value;
+
+            // Validasi Batas Minimal Rp 50.000
+            if (nominal < 50000) {
+                Swal.fire('Batas Penarikan Minimal', 'Penarikan saldo minimal adalah Rp 50.000.', 'warning');
+                return;
+            }
+
+            // Validasi Kecukupan Saldo
+            if (nominal > dataApp.saldo) {
+                Swal.fire('Saldo Tidak Cukup', `Saldo kamu saat ini hanya ${formatRupiah(dataApp.saldo)}. Silakan kumpulkan lebih banyak barang bekas!`, 'error');
+                return;
+            }
+
+            // Kurangi Saldo
+            dataApp.saldo -= nominal;
+            simpanData();
+            tutupModalTarik();
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Penarikan Berhasil Diproses!',
+                html: `Penarikan sebesar <b>${formatRupiah(nominal)}</b> via <b>${metode} (${noTujuan})</b> sedang dikirim.`,
+                confirmButtonColor: '#059669'
+            });
+        }
+
+        // Navigasi Tab
+        function switchTab(tab) {
+            const secForm = document.getElementById('sectionForm');
+            const secRiwayat = document.getElementById('sectionRiwayat');
+            const secAdmin = document.getElementById('sectionAdmin');
+
+            const btnForm = document.getElementById('tabFormBtn');
+            const btnRiwayat = document.getElementById('tabRiwayatBtn');
+            const btnAdmin = document.getElementById('tabAdminBtn');
+
+            // Hide All
+            secForm.classList.add('hidden');
+            secRiwayat.classList.add('hidden');
+            secAdmin.classList.add('hidden');
+
+            btnForm.className = "flex-1 py-2.5 text-center font-semibold text-gray-500 rounded-lg text-sm transition hover:text-emerald-600";
+            btnRiwayat.className = "flex-1 py-2.5 text-center font-semibold text-gray-500 rounded-lg text-sm transition hover:text-emerald-600";
+            btnAdmin.className = "flex-1 py-2.5 text-center font-semibold text-gray-500 rounded-lg text-sm transition hover:text-emerald-600";
+
+            if (tab === 'form') {
+                secForm.classList.remove('hidden');
+                btnForm.className = "flex-1 py-2.5 text-center font-bold text-emerald-600 border-b-2 border-emerald-600 rounded-lg text-sm transition";
+            } else if (tab === 'riwayat') {
+                secRiwayat.classList.remove('hidden');
+                btnRiwayat.className = "flex-1 py-2.5 text-center font-bold text-emerald-600 border-b-2 border-emerald-600 rounded-lg text-sm transition";
+            } else if (tab === 'admin') {
+                secAdmin.classList.remove('hidden');
+                btnAdmin.className = "flex-1 py-2.5 text-center font-bold text-emerald-600 border-b-2 border-emerald-600 rounded-lg text-sm transition";
+            }
+        }
+
+        // Load Awal
+        updateUI();
+    </script>
+</body>
+</html>
