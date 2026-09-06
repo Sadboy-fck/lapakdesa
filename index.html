@@ -112,19 +112,25 @@
             <div>
                 <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 text-center">Menu Utama</h2>
                 <div class="grid grid-cols-4 gap-2.5 px-1">
-                    <!-- GRID 1: INFO -->
-                    <button onclick="bukaModal('modalProduk')" class="flex flex-col items-center justify-center p-2.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/60 rounded-2xl shadow-sm hover:shadow active:scale-90 transition-all">
+                    <!-- GRID 1: INFO (Hanya menampilkan info katalog & syarat) -->
+                    <button onclick="bukaModal('modalInfo')" class="flex flex-col items-center justify-center p-2.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/60 rounded-2xl shadow-sm hover:shadow active:scale-90 transition-all">
                         <i class="fa-solid fa-circle-info text-xl text-emerald-600"></i>
                         <span class="text-[10px] font-extrabold text-emerald-800 mt-1 tracking-tight">INFO</span>
                     </button>
+
+                    <!-- GRID 2: GALLERY -->
                     <button onclick="bukaModal('modalGaleri')" class="flex flex-col items-center justify-center p-2.5 bg-blue-50 hover:bg-blue-100 border border-blue-200/60 rounded-2xl shadow-sm hover:shadow active:scale-90 transition-all">
                         <i class="fa-solid fa-camera text-xl text-blue-600"></i>
                         <span class="text-[10px] font-extrabold text-blue-800 mt-1 tracking-tight">GALLERY</span>
                     </button>
+
+                    <!-- GRID 3: FACT -->
                     <button onclick="bukaModal('modalFact')" class="flex flex-col items-center justify-center p-2.5 bg-purple-50 hover:bg-purple-100 border border-purple-200/60 rounded-2xl shadow-sm hover:shadow active:scale-90 transition-all">
                         <i class="fa-solid fa-lightbulb text-xl text-purple-600"></i>
                         <span class="text-[10px] font-extrabold text-purple-800 mt-1 tracking-tight">FACT</span>
                     </button>
+
+                    <!-- GRID 4: PROFIL -->
                     <button onclick="bukaModal('modalProfil')" class="flex flex-col items-center justify-center p-2.5 bg-amber-50 hover:bg-amber-100 border border-amber-200/60 rounded-2xl shadow-sm hover:shadow active:scale-90 transition-all">
                         <i class="fa-solid fa-user-gear text-xl text-amber-600"></i>
                         <span class="text-[10px] font-extrabold text-amber-800 mt-1 tracking-tight">PROFIL</span>
@@ -132,16 +138,16 @@
                 </div>
             </div>
 
-            <!-- FITUR 1: BANNER INFORMASI & JUAL LAYANAN UTAMA -->
-            <div onclick="bukaModal('modalProduk')" class="bg-gradient-to-br from-emerald-600 via-teal-600 to-emerald-800 rounded-2xl p-4 text-white shadow-lg relative overflow-hidden cursor-pointer active:scale-98 transition group">
+            <!-- FITUR: LAYANAN UTAMA (Banner Khusus Transaksi / Form Jual Sampah) -->
+            <div onclick="bukaModal('modalJual')" class="bg-gradient-to-br from-emerald-600 via-teal-600 to-emerald-800 rounded-2xl p-4 text-white shadow-lg relative overflow-hidden cursor-pointer active:scale-98 transition group">
                 <div class="absolute -right-4 -bottom-4 opacity-20 group-hover:scale-110 transition-transform">
                     <i class="fa-solid fa-truck-fast text-8xl"></i>
                 </div>
                 <div class="relative z-10 flex justify-between items-center">
                     <div class="space-y-1 max-w-[70%]">
                         <span class="bg-yellow-400 text-slate-900 text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">Layanan Utama</span>
-                        <h3 class="font-black text-base leading-tight">Jual Sampah & Cek Harga</h3>
-                        <p class="text-[10px] text-emerald-100">Pilih kategori, hitung estimasi harga, dan kirim lokasi penjemputan.</p>
+                        <h3 class="font-black text-base leading-tight">Jual Sampah Sekarang</h3>
+                        <p class="text-[10px] text-emerald-100">Pilih jenis barang, atur berat, share lokasi GPS, dan kurir langsung jemput.</p>
                     </div>
                     <div class="w-10 h-10 rounded-xl bg-white text-emerald-700 flex items-center justify-center font-bold text-base shadow group-hover:bg-yellow-300 transition-colors">
                         <i class="fa-solid fa-arrow-right"></i>
@@ -149,7 +155,7 @@
                 </div>
             </div>
 
-            <!-- FITUR 2: FEED AKTIVITAS TERKINI (Live Social Proof) -->
+            <!-- FEED AKTIVITAS TERKINI (Live Social Proof) -->
             <div class="space-y-2">
                 <div class="flex justify-between items-center px-1">
                     <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Aktivitas Penjemputan</h3>
@@ -164,7 +170,7 @@
 
         </main>
 
-        <!-- 5. WATERMARK FOOTER -->
+        <!-- WATERMARK FOOTER -->
         <footer class="mt-2 px-3.5">
             <div class="bg-slate-100 border border-slate-200/80 rounded-xl p-3 text-center shadow-inner">
                 <p class="text-[10px] font-bold text-slate-600 flex items-center justify-center space-x-1">
@@ -195,7 +201,7 @@
                     <i class="fa-solid fa-fire text-amber-500 text-sm shrink-0"></i>
                     <span>Promo minggu ini: Harga Kardus & Tembaga naik hingga 15%!</span>
                 </div>
-                <button onclick="tutupModal('modalPromo'); bukaModal('modalProduk')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3 rounded-xl shadow-lg hover:shadow-xl transition active:scale-95 text-xs flex items-center justify-center space-x-2">
+                <button onclick="tutupModal('modalPromo'); bukaModal('modalJual')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3 rounded-xl shadow-lg hover:shadow-xl transition active:scale-95 text-xs flex items-center justify-center space-x-2">
                     <i class="fa-solid fa-cart-plus"></i>
                     <span>Jual Sampah Sekarang</span>
                 </button>
@@ -206,126 +212,140 @@
         </div>
     </div>
 
-    <!-- MODAL INFORMASI PRODUK & FORM JUAL BARANG -->
-    <div id="modalProduk" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <!-- MODAL 1: MURNI HANYA INFORMASI PRODUK & HARGA (Untuk Grid INFO) -->
+    <div id="modalInfo" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-sm rounded-2xl p-4 shadow-2xl max-h-[88vh] overflow-y-auto animate-modal-center space-y-4">
             
-            <!-- Header Modal -->
             <div class="flex justify-between items-center border-b border-slate-100 pb-2">
                 <div class="flex items-center space-x-2">
                     <div class="bg-emerald-100 text-emerald-600 p-1.5 rounded-lg text-xs">
-                        <i class="fa-solid fa-dumpster-fire"></i>
+                        <i class="fa-solid fa-circle-info"></i>
                     </div>
-                    <h3 class="font-bold text-slate-800 text-sm">Katalog & Form Penjualan</h3>
+                    <h3 class="font-bold text-slate-800 text-sm">Informasi Produk & Harga</h3>
                 </div>
-                <button onclick="tutupModal('modalProduk')" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 text-xs">
+                <button onclick="tutupModal('modalInfo')" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 text-xs">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
 
             <!-- Daftar Produk & Harga -->
             <div>
-                <p class="text-[11px] font-semibold text-slate-500 mb-2">Pilihan Kategori & Patokan Harga:</p>
+                <p class="text-[11px] font-semibold text-slate-500 mb-2">Kategori Daur Ulang & Estimasi Harga:</p>
                 <div class="grid grid-cols-2 gap-2 text-xs">
-                    <div class="bg-emerald-50 border border-emerald-200/60 p-2 rounded-xl space-y-0.5">
+                    <div class="bg-emerald-50 border border-emerald-200/60 p-2.5 rounded-xl space-y-1">
                         <div class="flex items-center justify-between">
                             <span class="font-extrabold text-slate-700 text-[11px]">Plastik</span>
                             <i class="fa-solid fa-bottle-water text-emerald-600 text-xs"></i>
                         </div>
                         <p class="font-black text-emerald-700 text-xs">Rp 3.000 <span class="text-[9px] text-slate-500 font-normal">/ kg</span></p>
+                        <p class="text-[9px] text-slate-400">Botol, gelas mineral, & galon bekas.</p>
                     </div>
 
-                    <div class="bg-emerald-50 border border-emerald-200/60 p-2 rounded-xl space-y-0.5">
+                    <div class="bg-emerald-50 border border-emerald-200/60 p-2.5 rounded-xl space-y-1">
                         <div class="flex items-center justify-between">
                             <span class="font-extrabold text-slate-700 text-[11px]">Besi</span>
                             <i class="fa-solid fa-cubes text-emerald-600 text-xs"></i>
                         </div>
                         <p class="font-black text-emerald-700 text-xs">Rp 5.000 <span class="text-[9px] text-slate-500 font-normal">/ kg</span></p>
+                        <p class="text-[9px] text-slate-400">Besi padat, seng, & pipa besi bekas.</p>
                     </div>
 
-                    <div class="bg-emerald-50 border border-emerald-200/60 p-2 rounded-xl space-y-0.5">
+                    <div class="bg-emerald-50 border border-emerald-200/60 p-2.5 rounded-xl space-y-1">
                         <div class="flex items-center justify-between">
                             <span class="font-extrabold text-slate-700 text-[11px]">Kardus</span>
                             <i class="fa-solid fa-box text-emerald-600 text-xs"></i>
                         </div>
                         <p class="font-black text-emerald-700 text-xs">Rp 2.000 <span class="text-[9px] text-slate-500 font-normal">/ kg</span></p>
+                        <p class="text-[9px] text-slate-400">Kardus tebal, duplex, & kertas koran.</p>
                     </div>
 
-                    <div class="bg-emerald-50 border border-emerald-200/60 p-2 rounded-xl space-y-0.5">
+                    <div class="bg-emerald-50 border border-emerald-200/60 p-2.5 rounded-xl space-y-1">
                         <div class="flex items-center justify-between">
                             <span class="font-extrabold text-slate-700 text-[11px]">Tembaga</span>
                             <i class="fa-solid fa-bolt text-emerald-600 text-xs"></i>
                         </div>
                         <p class="font-black text-emerald-700 text-xs">Rp 70.000 <span class="text-[9px] text-slate-500 font-normal">/ kg</span></p>
+                        <p class="text-[9px] text-slate-400">Kabel kupas & kumparan dinamo.</p>
                     </div>
                 </div>
+            </div>
+
+            <!-- Kriteria Sampah Diterima -->
+            <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-3 space-y-1.5 text-[11px] text-slate-600">
+                <p class="font-extrabold text-slate-800 flex items-center space-x-1.5">
+                    <i class="fa-solid fa-clipboard-check text-emerald-600"></i>
+                    <span>Kriteria Sampah Diterima</span>
+                </p>
+                <ul class="list-disc list-inside space-y-1 text-slate-500 text-[10px] pl-1">
+                    <li>Sampah dalam kondisi relatif bersih dan tidak basah kuyup.</li>
+                    <li>Botol plastik sebaiknya dikosongkan dari sisa air.</li>
+                    <li>Minimal berat penjemputan gabungan total adalah 5 kg.</li>
+                    <li>Harga dapat berubah sewaktu-waktu mengikuti perkembangan pasar daur ulang.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: FORM TRANSAKSI JUAL BARANG (Khusus Tombol Layanan Utama) -->
+    <div id="modalJual" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-2xl p-4 shadow-2xl max-h-[88vh] overflow-y-auto animate-modal-center space-y-3.5">
+            
+            <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+                <div class="flex items-center space-x-2">
+                    <div class="bg-emerald-100 text-emerald-600 p-1.5 rounded-lg text-xs">
+                        <i class="fa-solid fa-cart-plus"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-sm">Form Jual Sampah</h3>
+                </div>
+                <button onclick="tutupModal('modalJual')" class="w-7 h-7 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 text-xs">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
 
             <!-- FORM JUAL BARANG -->
-            <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-2xl space-y-3">
-                <div class="flex items-center justify-between border-b border-slate-200 pb-2">
-                    <h4 class="font-extrabold text-slate-800 text-xs flex items-center space-x-1.5">
-                        <i class="fa-solid fa-cart-plus text-emerald-600"></i>
-                        <span>Form Jual Sampah</span>
-                    </h4>
-                    <span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Penjemputan Gratis</span>
+            <form onsubmit="handleJualSampah(event)" class="space-y-3 text-xs">
+                <!-- 1. PILIH KATEGORI BARANG -->
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1 text-[11px]">Pilih Kategori Barang</label>
+                    <select id="jualKategori" onchange="hitungTotalJual()" class="w-full border border-slate-200 rounded-xl px-2.5 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium" required>
+                        <option value="" disabled selected>-- Pilih Jenis Sampah --</option>
+                        <option value="Plastik">Plastik (Rp 3.000/kg)</option>
+                        <option value="Besi">Besi (Rp 5.000/kg)</option>
+                        <option value="Kardus">Kardus (Rp 2.000/kg)</option>
+                        <option value="Tembaga">Tembaga (Rp 70.000/kg)</option>
+                    </select>
                 </div>
 
-                <form onsubmit="handleJualSampah(event)" class="space-y-2.5 text-xs">
-                    <!-- 1. PILIH KATEGORI -->
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 text-[11px]">Pilih Kategori Barang</label>
-                        <select id="jualKategori" onchange="hitungTotalJual()" class="w-full border border-slate-200 rounded-xl px-2.5 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium" required>
-                            <option value="" disabled selected>-- Pilih Jenis Sampah --</option>
-                            <option value="Plastik">Plastik (Rp 3.000/kg)</option>
-                            <option value="Besi">Besi (Rp 5.000/kg)</option>
-                            <option value="Kardus">Kardus (Rp 2.000/kg)</option>
-                            <option value="Tembaga">Tembaga (Rp 70.000/kg)</option>
-                        </select>
-                    </div>
+                <!-- 2. BANYAKNYA (KG) -->
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1 text-[11px]">Banyaknya (Kg)</label>
+                    <input type="number" id="jualBerat" min="1" step="0.5" placeholder="Contoh: 5" oninput="hitungTotalJual()" class="w-full border border-slate-200 rounded-xl px-2.5 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium" required>
+                    <p class="text-[9px] text-slate-400 mt-0.5">*Minimal penjemputan total gabungan 5 kg.</p>
+                </div>
 
-                    <!-- 2. BANYAKNYA (KG) -->
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1 text-[11px]">Banyaknya (Kg)</label>
-                        <input type="number" id="jualBerat" min="1" step="0.5" placeholder="Contoh: 5" oninput="hitungTotalJual()" class="w-full border border-slate-200 rounded-xl px-2.5 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium" required>
-                        <p class="text-[9px] text-slate-400 mt-0.5">*Minimal total penjemputan gabungan 5 kg.</p>
-                    </div>
+                <!-- 3. TOTAL HARGA -->
+                <div class="bg-emerald-100/70 border border-emerald-300/80 p-2.5 rounded-xl flex justify-between items-center">
+                    <span class="font-bold text-emerald-900 text-[11px]">Total Estimasi Harga:</span>
+                    <span id="jualTotal" class="font-black text-emerald-800 text-sm">Rp 0</span>
+                </div>
 
-                    <!-- 3. TOTAL HARGA -->
-                    <div class="bg-emerald-100/70 border border-emerald-300/80 p-2.5 rounded-xl flex justify-between items-center">
-                        <span class="font-bold text-emerald-900 text-[11px]">Total Estimasi Harga:</span>
-                        <span id="jualTotal" class="font-black text-emerald-800 text-sm">Rp 0</span>
-                    </div>
-
-                    <!-- 4. LOKASI SHARE (GPS) -->
-                    <div class="space-y-1">
-                        <label class="block font-semibold text-slate-700 text-[11px]">Lokasi Penjemputan</label>
-                        <button type="button" onclick="ambilLokasiGPS()" class="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-bold py-2 rounded-xl text-[11px] flex items-center justify-center space-x-1.5 transition active:scale-95">
-                            <i class="fa-solid fa-location-crosshairs text-blue-600"></i>
-                            <span id="btnTextGps">Aktifkan Lokasi Share (GPS)</span>
-                        </button>
-                        <input type="hidden" id="jualGps" value="Lokasi Manual Bandung">
-                    </div>
-
-                    <!-- 5. TOMBOL JUAL -->
-                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-2.5 rounded-xl shadow-lg hover:shadow-xl transition active:scale-95 text-xs flex items-center justify-center space-x-2 mt-2">
-                        <i class="fa-solid fa-paper-plane"></i>
-                        <span>Jual Sampah Sekarang</span>
+                <!-- 4. AKTIFKAN LOKASI SHARE (GPS) -->
+                <div class="space-y-1">
+                    <label class="block font-semibold text-slate-700 text-[11px]">Lokasi Penjemputan</label>
+                    <button type="button" onclick="ambilLokasiGPS()" class="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 font-bold py-2 rounded-xl text-[11px] flex items-center justify-center space-x-1.5 transition active:scale-95">
+                        <i class="fa-solid fa-location-crosshairs text-blue-600"></i>
+                        <span id="btnTextGps">Aktifkan Lokasi Share (GPS)</span>
                     </button>
-                </form>
-            </div>
+                    <input type="hidden" id="jualGps" value="Lokasi Manual Bandung">
+                </div>
 
-            <!-- Syarat & Ketentuan Singkat -->
-            <div class="bg-slate-50 border border-slate-200/80 rounded-xl p-2.5 space-y-1 text-[10px] text-slate-500">
-                <p class="font-bold text-slate-700 flex items-center space-x-1">
-                    <i class="fa-solid fa-clipboard-check text-emerald-600"></i>
-                    <span>Catatan Penjemputan:</span>
-                </p>
-                <ul class="list-disc list-inside space-y-0.5 pl-1">
-                    <li>Sampah dalam kondisi tidak terlalu basah kuyup.</li>
-                    <li>Driver akan menghubungi nomor Anda saat menuju lokasi.</li>
-                </ul>
-            </div>
+                <!-- 5. TOMBOL JUAL -->
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-2.5 rounded-xl shadow-lg hover:shadow-xl transition active:scale-95 text-xs flex items-center justify-center space-x-2 mt-2">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Jual Sampah Sekarang</span>
+                </button>
+            </form>
+
         </div>
     </div>
 
@@ -509,7 +529,6 @@
             ]
         };
 
-        // Dummy Live Feed
         const dummyLiveFeed = [
             { nama: 'Budi S.', lokasi: 'Coblong', barang: '12kg Kardus', status: 'Selesai' },
             { nama: 'Rina M.', lokasi: 'Cicendo', barang: '5kg Tembaga', status: 'Selesai' },
@@ -566,7 +585,7 @@
             `).join('');
         }
 
-        // --- SLIDER LOGIC ---
+        // SLIDER LOGIC
         let currentSlide = 0;
         setInterval(() => {
             currentSlide = (currentSlide + 1) % 3;
@@ -576,11 +595,11 @@
             }
         }, 4000);
 
-        // --- MODAL CONTROLLER ---
+        // MODAL CONTROLLER
         function bukaModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function tutupModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-        // --- LOGIC JUAL BARANG ---
+        // LOGIC JUAL BARANG
         function hitungTotalJual() {
             const kategori = document.getElementById('jualKategori').value;
             const berat = parseFloat(document.getElementById('jualBerat').value) || 0;
@@ -653,7 +672,7 @@
             document.getElementById('jualTotal').innerText = 'Rp 0';
             document.getElementById('btnTextGps').innerText = 'Aktifkan Lokasi Share (GPS)';
 
-            tutupModal('modalProduk');
+            tutupModal('modalJual');
 
             Swal.fire({
                 icon: 'success',
@@ -663,7 +682,7 @@
             });
         }
 
-        // --- GALERI LOGIC ---
+        // GALERI LOGIC
         function uploadFoto() {
             const input = document.getElementById('inputFoto');
             if (input.files && input.files[0]) {
@@ -710,7 +729,7 @@
             `).join('');
         }
 
-        // --- PROFIL & ADMIN STATUS ---
+        // PROFIL & ADMIN STATUS
         function switchTabProfil(tab) {
             const secStatus = document.getElementById('secStatus');
             const secAdmin = document.getElementById('secAdmin');
@@ -781,7 +800,7 @@
             }
         }
 
-        // --- TARIK UANG LOGIC ---
+        // TARIK UANG LOGIC
         function bukaModalTarik() {
             document.getElementById('modalTarikUang').classList.remove('hidden');
         }
