@@ -112,7 +112,7 @@
             <div>
                 <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 text-center">Menu Utama</h2>
                 <div class="grid grid-cols-4 gap-2.5 px-1">
-                    <!-- GRID 1: INFO (Disesuaikan) -->
+                    <!-- GRID 1: INFO -->
                     <button onclick="bukaModal('modalProduk')" class="flex flex-col items-center justify-center p-2.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/60 rounded-2xl shadow-sm hover:shadow active:scale-90 transition-all">
                         <i class="fa-solid fa-circle-info text-xl text-emerald-600"></i>
                         <span class="text-[10px] font-extrabold text-emerald-800 mt-1 tracking-tight">INFO</span>
@@ -149,28 +149,7 @@
                 </div>
             </div>
 
-            <!-- FITUR 2: STATISTIK DAMPAK LINGKUNGAN (Eco-Impact Counter) -->
-            <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-3.5 shadow-sm space-y-2">
-                <div class="flex justify-between items-center border-b border-slate-200/60 pb-2">
-                    <div class="flex items-center space-x-1.5">
-                        <i class="fa-solid fa-seedling text-emerald-600 text-xs"></i>
-                        <h3 class="font-bold text-slate-800 text-xs">Dampak Hijau Kamu</h3>
-                    </div>
-                    <span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Level: Pahlawan Bumi</span>
-                </div>
-                <div class="grid grid-cols-2 gap-2 text-center pt-1">
-                    <div class="bg-white p-2 rounded-xl border border-slate-100 shadow-2xs">
-                        <p id="totalKgUser" class="font-black text-base text-emerald-600">0 Kg</p>
-                        <p class="text-[9px] text-slate-400 font-medium">Sampah Didaur Ulang</p>
-                    </div>
-                    <div class="bg-white p-2 rounded-xl border border-slate-100 shadow-2xs">
-                        <p id="totalPohonUser" class="font-black text-base text-teal-600">0 Pohon</p>
-                        <p class="text-[9px] text-slate-400 font-medium">Estimasi Diselamatkan</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- FITUR 3: FEED AKTIVITAS TERKINI (Live Social Proof) -->
+            <!-- FITUR 2: FEED AKTIVITAS TERKINI (Live Social Proof) -->
             <div class="space-y-2">
                 <div class="flex justify-between items-center px-1">
                     <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Aktivitas Penjemputan</h3>
@@ -500,13 +479,6 @@
             document.getElementById('profileSaldo').innerText = formatRp(appData.saldo);
             document.getElementById('profileNama').innerText = appData.user.nama;
             document.getElementById('profileAlamat').innerText = appData.user.alamat;
-            
-            // Hitung Dampak Hijau
-            const totalKg = appData.transaksi.reduce((sum, t) => sum + (t.status === 'Selesai' ? t.kg : 0), 0);
-            document.getElementById('totalKgUser').innerText = totalKg + ' Kg';
-            // 1kg kardus/kertas ~ 0.017 pohon
-            const totalPohon = (totalKg * 0.017).toFixed(1);
-            document.getElementById('totalPohonUser').innerText = totalPohon + ' Pohon';
 
             renderLiveFeed();
             renderGaleri();
